@@ -1,11 +1,12 @@
 import { createRootRoute, createRoute, createRouter, Outlet } from "@tanstack/react-router";
 import { Index } from "./Index";
+import { PublicHeader } from "./components/PublicHeader";
 
 //root routes
 const rootRoutePublic = createRootRoute({
     component: () => (
         <div>
-            <header>Publik header</header>
+            <PublicHeader/>
             <main><Outlet/></main>
             <footer>Publik footer</footer>
         </div>
@@ -30,6 +31,7 @@ const homeRoute = createRoute({
     path:"/",
     component: Index,
 });
+
 
 //route tree
 const routeTree = rootRoutePublic.addChildren([

@@ -1,0 +1,53 @@
+import { Link } from "@tanstack/react-router";
+import { FaHeart, FaSearch } from "react-icons/fa";
+import { FaBasketShopping } from "react-icons/fa6";
+import { IoLogIn } from "react-icons/io5";
+
+
+export function PublicHeader() {
+  return (
+    <header className="m-2">
+      <div className="header-top flex flex-col w-full md:flex-row">
+        <Link to="/" className="w-full max-w-2xl">
+          <img src="https://placehold.co/450x110" alt="Logo" className="w-full"/>
+        </Link>
+
+        <div className="search-container flex flex-row my-2 w-full items-center justify-between md:justify-between">
+          <form action="" className="search-form relative flex flex-row border-1 rounded-full h-9 w-full md:max-w-sm md:ml-3">
+              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2"/>
+            <input
+              type="search"
+              id="search"
+              name="q"
+              placeholder="Sök produkter..."
+              aria-label="Sök produkter"
+              className="w-full rounded-full pl-10 pr-3 text-sm focus:outline-none"
+            />
+          </form>
+          <div className="header-icons flex flex-row gap-2 ml-3 md:gap-3">
+            <a href="" className="text-3xl md:text-2xl"><FaHeart /></a>
+            <a href="" className="text-3xl md:text-2xl"><FaBasketShopping /></a>
+            <a href="" className="text-4xl md:text-3xl"><IoLogIn /></a>
+          </div>
+        </div>
+      </div>
+
+      <nav>
+        <ul className="nav-links text-xl md:text-lg md:flex md:gap-4">
+            <li>
+                <Link to="/nyheter">Nyheter</Link>
+            </li>
+            <li>
+                <Link to="/kläder">Kläder</Link>
+            </li>
+            <li>
+                <Link to="/accessoarer">Accessoarer</Link>
+            </li>
+            <li>
+                <Link to="/skor">Skor</Link>
+            </li>
+        </ul>
+      </nav>
+    </header>
+  );
+}
