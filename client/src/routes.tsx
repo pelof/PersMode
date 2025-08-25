@@ -1,17 +1,25 @@
-import { createRootRoute, createRoute, createRouter, Outlet } from "@tanstack/react-router";
-import { Index } from "./Index";
+import {
+  createRootRoute,
+  createRoute,
+  createRouter,
+  Outlet,
+} from "@tanstack/react-router";
+import { Index } from "./routes/Index";
 import { PublicHeader } from "./components/PublicHeader";
 import { PublicFooter } from "./components/PublicFooter";
+import { ProductDetails } from "./routes/ProductDetails";
 
 //root routes
 const rootRoutePublic = createRootRoute({
-    component: () => (
-        <div className="max-w-screen-2xl mx-auto flex flex-col justify-center w-full">
-            <PublicHeader/>
-            <main className="mx-2"><Outlet/></main>
-            <PublicFooter/>
-        </div>
-    )
+  component: () => (
+    <div className="max-w-screen-2xl mx-auto flex flex-col justify-center w-full">
+      <PublicHeader />
+      <main className="mx-2">
+        <Outlet />
+      </main>
+      <PublicFooter />
+    </div>
+  ),
 });
 
 //TODO implementera admin-route
@@ -28,14 +36,16 @@ const rootRoutePublic = createRootRoute({
 //child routes
 
 const homeRoute = createRoute({
-    getParentRoute: () => rootRoutePublic,
-    path:"/",
-    component: Index,
+  getParentRoute: () => rootRoutePublic,
+  path: "/",
+  component: Index,
+});
+const productRoute = createRoute({
+  getParentRoute: () => rootRoutePublic,
+  path: "/details", //TODO - dynamisk
+  component: ProductDetails,
 });
 
-
 //route tree
-const routeTree = rootRoutePublic.addChildren([
-    homeRoute
-]);
+const routeTree = rootRoutePublic.addChildren([homeRoute, productRoute]);
 export const router = createRouter({ routeTree });

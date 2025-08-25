@@ -14,3 +14,4 @@ export function CardGrid() {
         </section>
     )
 }
+//TODO dynamisk med lista från mappad array

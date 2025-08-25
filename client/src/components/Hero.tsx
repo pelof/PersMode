@@ -21,3 +21,4 @@ export function Hero() {
     </section>
   );
 }
+//TODO - dynamisk 
