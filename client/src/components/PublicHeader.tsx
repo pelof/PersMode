@@ -33,7 +33,7 @@ export function PublicHeader() {
       </div>
 
       <nav>
-        <ul className="nav-links text-xl md:text-lg md:flex md:gap-4">
+        <ul className="nav-links text-xl md:text-lg md:flex md:gap-4 md:my-4">
             <li>
                 <Link to="/nyheter">Nyheter</Link>
             </li>

@@ -8,7 +8,7 @@ const rootRoutePublic = createRootRoute({
     component: () => (
         <div>
             <PublicHeader/>
-            <main><Outlet/></main>
+            <main className="mx-2"><Outlet/></main>
             <PublicFooter/>
         </div>
     )
