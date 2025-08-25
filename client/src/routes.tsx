@@ -6,7 +6,7 @@ import { PublicFooter } from "./components/PublicFooter";
 //root routes
 const rootRoutePublic = createRootRoute({
     component: () => (
-        <div>
+        <div className="max-w-screen-2xl mx-auto flex flex-col justify-center w-full">
             <PublicHeader/>
             <main className="mx-2"><Outlet/></main>
             <PublicFooter/>
