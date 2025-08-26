@@ -9,6 +9,7 @@ import { PublicHeader } from "./components/PublicHeader";
 import { PublicFooter } from "./components/PublicFooter";
 import { ProductDetails } from "./routes/ProductDetails";
 import { Cart } from "./routes/Cart";
+import { CategoryClothing } from "./routes/categories/CategoryClothing";
 
 //root routes
 const rootRoutePublic = createRootRoute({
@@ -51,7 +52,12 @@ const cartRoute = createRoute({
     path: "/cart",
     component: Cart,
 })
+const categoryClothingRoute = createRoute({
+  getParentRoute: () => rootRoutePublic,
+  path: "/categories/clothing",
+  component: CategoryClothing,
+})
 
 //route tree
-const routeTree = rootRoutePublic.addChildren([homeRoute, productRoute, cartRoute]);
+const routeTree = rootRoutePublic.addChildren([homeRoute, productRoute, cartRoute, categoryClothingRoute]);
 export const router = createRouter({ routeTree });
