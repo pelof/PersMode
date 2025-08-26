@@ -16,11 +16,10 @@ export function Cart() {
           <div>
             <h2 className="m-1">199 SEK</h2>
             <div className="m-1 flex justify-center">
-                <input type="number" className="border-2 rounded max-w-15 px-1" /> 
-                {/* TODO: inte under 0 */}
-                <button className="p-1 text-2xl cursor-pointer">
-                    <FaRegTrashAlt />
-                </button>
+              <input type="number" min="1" className="border-2 rounded max-w-15 px-1" />
+              <button className="p-1 text-2xl cursor-pointer">
+                <FaRegTrashAlt />
+              </button>
             </div>
           </div>
         </li>
@@ -34,14 +33,61 @@ export function Cart() {
           <div>
             <h2 className="m-1">199 SEK</h2>
             <div className="m-1 flex justify-center">
-                <input type="number" className="border-2 rounded max-w-15 px-1" />
-                <button className="p-1 text-2xl cursor-pointer">
-                    <FaRegTrashAlt />
-                </button>
+              <input type="number" min="1" className="border-2 rounded max-w-15 px-1" />
+              <button className="p-1 text-2xl cursor-pointer">
+                <FaRegTrashAlt />
+              </button>
             </div>
           </div>
         </li>
       </ul>
+
+    <div className="mx-10 overflow-x-auto ">
+      <table className="hidden md:table table-fixed border w-full border-collapse">
+        <thead className="border-1 text-left bg-gray-400">
+          <tr>
+            <th className="w-1/2 lg:w-2/3 px-2 py-1">Produkt</th>
+            <th className="px-2 py-1">Pris</th>
+            <th className="px-2 py-1">Totalt</th>
+            <th className="px-2 py-1">Antal</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y">
+          <tr className="divide-x bg-gray-200">
+            <td className="px-2 py-1">
+              <Link to="/details">Gurkskalare</Link>
+            </td>
+            <td className="px-2 py-1">199 kr</td>
+            <td className="px-2 py-1">199 kr</td>
+            <td className="px-2 py-1">
+              <div className="flex">
+                              <input type="number" min="1" className="border-2 rounded max-w-15 px-1" />
+
+                <button className="p-1 text-2xl cursor-pointer">
+                  <FaRegTrashAlt />
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr className="divide-x bg-gray-50">
+            <td className="px-2 py-1">
+              <Link to="/details">Gurkskalare</Link>
+            </td>
+            <td className="px-2 py-1">199 kr</td>
+            <td className="px-2 py-1">199 kr</td>
+            <td className="px-2 py-1">
+              <div className="flex">
+              <input type="number" min="1" className="border-2 rounded max-w-15 px-1" />
+
+                <button className="p-1 text-2xl cursor-pointer">
+                  <FaRegTrashAlt />
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
     </>
   );
 }
