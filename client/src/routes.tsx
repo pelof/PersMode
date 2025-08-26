@@ -8,6 +8,7 @@ import { Index } from "./routes/Index";
 import { PublicHeader } from "./components/PublicHeader";
 import { PublicFooter } from "./components/PublicFooter";
 import { ProductDetails } from "./routes/ProductDetails";
+import { Cart } from "./routes/Cart";
 
 //root routes
 const rootRoutePublic = createRootRoute({
@@ -45,7 +46,12 @@ const productRoute = createRoute({
   path: "/details", //TODO - dynamisk
   component: ProductDetails,
 });
+const cartRoute = createRoute({
+    getParentRoute: () => rootRoutePublic,
+    path: "/cart",
+    component: Cart,
+})
 
 //route tree
-const routeTree = rootRoutePublic.addChildren([homeRoute, productRoute]);
+const routeTree = rootRoutePublic.addChildren([homeRoute, productRoute, cartRoute]);
 export const router = createRouter({ routeTree });
