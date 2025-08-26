@@ -1,4 +1,5 @@
 import { FaRegHeart } from "react-icons/fa";
+import { ProductCarousel } from "../components/ProductCarousel";
 
 export function ProductDetails() {
   return (
@@ -32,6 +33,7 @@ export function ProductDetails() {
         </div>
       </div>
       {/* TODO - liknande produkter */}
+      <ProductCarousel/>
     </section>
   );
 }
