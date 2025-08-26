@@ -35,16 +35,16 @@ export function PublicHeader() {
       <nav>
         <ul className="nav-links text-xl md:text-lg md:flex md:gap-4 md:my-4">
             <li>
-                <Link to="/nyheter">Nyheter</Link>
+                <Link className="hover:underline" to="/nyheter">Nyheter</Link>
             </li>
             <li>
-                <Link to="/kläder">Kläder</Link>
+                <Link className="hover:underline" to="/categories/clothing">Kläder</Link>
             </li>
             <li>
-                <Link to="/accessoarer">Accessoarer</Link>
+                <Link className="hover:underline" to="/accessoarer">Accessoarer</Link>
             </li>
             <li>
-                <Link to="/skor">Skor</Link>
+                <Link className="hover:underline" to="/skor">Skor</Link>
             </li>
         </ul>
       </nav>
