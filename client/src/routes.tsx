@@ -54,7 +54,7 @@ const cartRoute = createRoute({
 })
 const categoryRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
-  path: "/categories/clothing",
+  path: "/categories/$category",
   component: Category,
 })
 
