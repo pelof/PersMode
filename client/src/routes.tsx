@@ -9,7 +9,7 @@ import { PublicHeader } from "./components/PublicHeader";
 import { PublicFooter } from "./components/PublicFooter";
 import { ProductDetails } from "./routes/ProductDetails";
 import { Cart } from "./routes/Cart";
-import { CategoryClothing } from "./routes/categories/CategoryClothing";
+import { Category } from "./routes/categories/Category";
 
 //root routes
 const rootRoutePublic = createRootRoute({
@@ -52,12 +52,12 @@ const cartRoute = createRoute({
     path: "/cart",
     component: Cart,
 })
-const categoryClothingRoute = createRoute({
+const categoryRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
-  path: "/categories/clothing",
-  component: CategoryClothing,
+  path: "/categories/$category",
+  component: Category,
 })
 
 //route tree
-const routeTree = rootRoutePublic.addChildren([homeRoute, productRoute, cartRoute, categoryClothingRoute]);
+const routeTree = rootRoutePublic.addChildren([homeRoute, productRoute, cartRoute, categoryRoute]);
 export const router = createRouter({ routeTree });

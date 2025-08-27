@@ -38,13 +38,13 @@ export function PublicHeader() {
                 <Link className="hover:underline" to="/nyheter">Nyheter</Link>
             </li>
             <li>
-                <Link className="hover:underline" to="/categories/clothing">Kläder</Link>
+                <Link className="hover:underline" to="/categories/$category" params={{ category: "clothing" }}>Kläder</Link>
             </li>
             <li>
-                <Link className="hover:underline" to="/accessoarer">Accessoarer</Link>
+                <Link className="hover:underline" to="/categories/$category" params={{ category: "accessories" }}>Accessoarer</Link>
             </li>
             <li>
-                <Link className="hover:underline" to="/skor">Skor</Link>
+                <Link className="hover:underline" to="/categories/$category" params={{ category: "shoes" }}>Skor</Link>
             </li>
         </ul>
       </nav>
