@@ -44,7 +44,7 @@ const homeRoute = createRoute({
 });
 const productRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
-  path: "/details", //TODO - dynamisk
+  path: "/products/$slug", //TODO - dynamisk
   component: ProductDetails,
 });
 const cartRoute = createRoute({
