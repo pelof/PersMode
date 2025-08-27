@@ -1,28 +1,15 @@
 import { FaRegHeart } from "react-icons/fa";
 import { ProductCarousel } from "../components/ProductCarousel";
-import type { Product } from "../types";
-import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
+import { useProduct } from "../api/products";
 
 export function ProductDetails() {
   const { slug } = useParams({ from: "/products/$slug"});
 
-  const { data, isLoading, error } = useQuery<Product[]>({
-    queryKey: ["product", slug],
-    queryFn: async () => {
-      // const res = await fetch (`http://localhost:5000/api/products/${slug}`)
-      const res = await fetch(`http://localhost:5000/api/products?slug=${slug}`)
-      if (!res.ok) throw new Error("Failed to fetch product");
-      return res.json()
-    },
-    enabled: !!slug, //Kör bara query om slug finns
-  })
+  const { data: product, isLoading, error } = useProduct(slug);
 
   if (isLoading) return <p>Laddar...</p>
   if (error) return <p>Ett fel uppstod: {error.message}</p>
-
-  const product = data?.[0] //plockar ut första produkten
-
   if (!product) return <p>Produkten kunde inte hittas</p>
 
   
