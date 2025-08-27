@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { CardGrid } from "../../components/CardGrid";
+import type { Product } from "../../types";
 
 
 
-export function Category({category}) {
+export function Category({category}: { category: string}) {
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading } = useQuery<Product[]>({
         queryKey: ["products", category],
         queryFn: async () => {
             const res = await fetch(`http://localhost:5000/api/products?category=${category}`)
@@ -17,8 +18,8 @@ export function Category({category}) {
     if (isLoading) return <p> Laddar... </p>
     return (
         <>
-        <h1 className="text-2xl text-center my-5">Kläder</h1>
-        <CardGrid products={data}/>
+        <h1 className="text-2xl text-center my-5">{Kläder}</h1>
+        <CardGrid products={data ?? []}/>
         </>
     )
 }

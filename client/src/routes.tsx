@@ -52,12 +52,12 @@ const cartRoute = createRoute({
     path: "/cart",
     component: Cart,
 })
-const categoryClothingRoute = createRoute({
+const categoryRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
   path: "/categories/clothing",
   component: Category,
 })
 
 //route tree
-const routeTree = rootRoutePublic.addChildren([homeRoute, productRoute, cartRoute, categoryClothingRoute]);
+const routeTree = rootRoutePublic.addChildren([homeRoute, productRoute, cartRoute, categoryRoute]);
 export const router = createRouter({ routeTree });
