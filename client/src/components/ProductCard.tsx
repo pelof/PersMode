@@ -15,7 +15,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
     return (
         <article className="flex flex-col justify-center">
-        <Link to="/details" params={{ id: product.id }}>
+        <Link to="/products/$slug" params={{ slug: product.product_slug }}>
         <div className="relative">
             <img src={product.product_image} alt={product.product_name} className="w-full"/>
             <FaRegHeart className="absolute right-3 bottom-3 text-4xl"/>
