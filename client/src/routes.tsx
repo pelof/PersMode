@@ -9,7 +9,7 @@ import { PublicHeader } from "./components/PublicHeader";
 import { PublicFooter } from "./components/PublicFooter";
 import { ProductDetails } from "./routes/ProductDetails";
 import { Cart } from "./routes/Cart";
-import { CategoryClothing } from "./routes/categories/CategoryClothing";
+import { Category } from "./routes/categories/Category";
 
 //root routes
 const rootRoutePublic = createRootRoute({
@@ -55,7 +55,7 @@ const cartRoute = createRoute({
 const categoryClothingRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
   path: "/categories/clothing",
-  component: CategoryClothing,
+  component: Category,
 })
 
 //route tree
