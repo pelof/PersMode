@@ -1,7 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
 import { CardGrid } from "../../components/CardGrid";
-import type { Product } from "../../types";
 import { useParams } from "@tanstack/react-router";
+import { useProducts } from "../../api/products";
 
 
 
@@ -20,14 +19,7 @@ export function Category() {
     }
     const displayName = categoryNames[category] ?? category;
 
-    const { data, isLoading } = useQuery<Product[]>({
-        queryKey: ["products", category],
-        queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/api/products?category=${category}`)
-            return res.json()
-        },
-        enabled: !!category,
-    })
+    const { data, isLoading } = useProducts({ category })
 
     if (isLoading) return <p> Laddar... </p>
 
@@ -38,5 +30,3 @@ export function Category() {
         </>
     )
 }
-
-//TODO: info från databas behöver matas in i cardgrid för att sedan generera x antal kort.
