@@ -18,6 +18,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <Link to="/products/$slug" params={{ slug: product.product_slug }}>
         <div className="relative">
             <img src={product.product_image} alt={product.product_name} className="w-full"/>
+            {/* TODO fixa funktionellt */}
             <FaRegHeart className="absolute right-3 bottom-3 text-4xl"/>
             {diffDays >= 0 && diffDays < 7 && (
             <div className="absolute left-4 top-4 bg-black text-white px-2 py-1 rounded">Nyhet</div>

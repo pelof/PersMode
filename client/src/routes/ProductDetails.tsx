@@ -36,6 +36,7 @@ export function ProductDetails() {
             alt={product.product_name}
             className="w-full min-w-md"
           />
+          {/* TODO fixa funktionellt */}
           <FaRegHeart className="absolute right-3 bottom-3 text-4xl" />
           <div className="absolute left-4 top-4 bg-black text-white px-2 py-1 rounded">
             Nyhet
@@ -49,15 +50,16 @@ export function ProductDetails() {
           </p>
           <p className="text-xl font-semibold mt-2 md:mt-5">{product.product_price} kr</p>
           <div>
+            {/* TODO: kopplat till ett POST anrop och varukorg */}
             <button type="button" className="border-1 rounded py-1 mt-2 w-full md:w-40">
               Lägg i varukorg
             </button>
           </div>
         </div>
       </div>
-      {/* TODO - liknande produkter */}
+      {/* TODO - liknande produkter dynamisk */}
       <ProductCarousel/>
     </section>
   );
 }
-//TODO dynamisk
+
