@@ -20,7 +20,7 @@ export function Category() {
     const displayName = categoryNames[category] ?? category;
 
     const { data, isLoading } = useProducts({ category })
-
+//TODO lägg till "inget svar från databasen" eller liknande när sökningen tar för lång tid.
     if (isLoading) return <p> Laddar... </p>
 
     return (

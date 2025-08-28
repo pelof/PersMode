@@ -13,8 +13,10 @@ export function PublicHeader() {
         </Link>
 
         <div className="search-container flex flex-row my-2 w-full items-center justify-between md:justify-between">
-          <form action="" className="search-form relative flex flex-row border-1 rounded-full h-9 w-full md:max-w-sm md:ml-3">
-              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2"/>
+          <form action="/search" className="search-form relative flex flex-row border-1 rounded-full h-9 w-full md:max-w-sm md:ml-3">
+              <button type="submit">
+              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 hover:cursor-pointer"/>
+              </button>
             <input
               type="search"
               id="search"

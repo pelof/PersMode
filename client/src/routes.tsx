@@ -10,6 +10,7 @@ import { PublicFooter } from "./components/PublicFooter";
 import { ProductDetails } from "./routes/ProductDetails";
 import { Cart } from "./routes/Cart";
 import { Category } from "./routes/categories/Category";
+import { Search } from "./routes/Search";
 
 //root routes
 const rootRoutePublic = createRootRoute({
@@ -44,7 +45,7 @@ const homeRoute = createRoute({
 });
 const productRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
-  path: "/products/$slug", //TODO - dynamisk
+  path: "/products/$slug",
   component: ProductDetails,
 });
 const cartRoute = createRoute({
@@ -57,7 +58,12 @@ const categoryRoute = createRoute({
   path: "/categories/$category",
   component: Category,
 })
+const searchRoute = createRoute({
+  getParentRoute: () => rootRoutePublic,
+  path: "/search",
+  component: Search,
+})
 
 //route tree
-const routeTree = rootRoutePublic.addChildren([homeRoute, productRoute, cartRoute, categoryRoute]);
+const routeTree = rootRoutePublic.addChildren([homeRoute, productRoute, cartRoute, categoryRoute, searchRoute]);
 export const router = createRouter({ routeTree });
