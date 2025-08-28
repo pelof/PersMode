@@ -26,6 +26,11 @@ app.get("/api/products", (req, res) => {
     params.push(`%${q}%`, `%${q}%`);
   }
 
+  if (req.query.new === "true"){
+    query += " AND product_published >= date('now', '-7 days')";
+    console.log(query)
+  }
+
   const products = db.prepare(query).all(...params);
   res.json(products);
 });

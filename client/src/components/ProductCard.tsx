@@ -4,14 +4,18 @@ import type { Product } from "../types";
 
 type ProductCardProps = {
     product: Product;
+    hideNewsBadge?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, hideNewsBadge }: ProductCardProps) {
     const today = new Date();
     const publishedDate = new Date(product.product_published);
  
     const diffTime = today.getTime() - publishedDate.getTime();
     const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+    const isNew = diffDays >= 0 && diffDays < 7;
+
 
     return (
         <article className="flex flex-col justify-center">
@@ -20,7 +24,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <img src={product.product_image} alt={product.product_name} className="w-full"/>
             {/* TODO fixa funktionellt */}
             <FaRegHeart className="absolute right-3 bottom-3 text-4xl"/>
-            {diffDays >= 0 && diffDays < 7 && (
+            {!hideNewsBadge && isNew && (
             <div className="absolute left-4 top-4 bg-black text-white px-2 py-1 rounded">Nyhet</div>
             )}
         </div>

@@ -37,7 +37,7 @@ export function PublicHeader() {
       <nav>
         <ul className="nav-links text-xl md:text-lg md:flex md:gap-4 md:my-4">
             <li>
-                <Link className="hover:underline" to="/nyheter">Nyheter</Link>
+                <Link className="hover:underline" to="/news">Nyheter</Link>
             </li>
             <li>
                 <Link className="hover:underline" to="/categories/$category" params={{ category: "clothing" }}>Kläder</Link>
