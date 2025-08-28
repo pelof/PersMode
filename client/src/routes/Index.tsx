@@ -10,7 +10,7 @@ export function Index() {
     return (
         <>
         <Hero/>
-        <Spots/>
+        <Spots products={data?.slice(8,11) ?? []}/>
         <CardGrid products={data?.slice(0,8) ?? []}/>
         </>
     );
