@@ -37,7 +37,6 @@ app.get("/api/products", (req, res) => {
 
 app.get("/api/products/:slug", (req, res) => {
     const { slug } = req.params;
-    console.log("query med slug:", slug);
 
     const product = db.prepare("SELECT * FROM products WHERE product_published <= ? AND product_slug = ?").get(today, slug);
 
