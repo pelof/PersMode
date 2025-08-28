@@ -17,9 +17,9 @@ import { Checkout } from "./routes/Checkout";
 //root routes
 const rootRoutePublic = createRootRoute({
   component: () => (
-    <div className="max-w-screen-2xl mx-auto flex flex-col justify-center w-full">
+    <div className="max-w-screen-2xl mx-auto flex flex-col justify-center w-full min-h-screen">
       <PublicHeader />
-      <main className="mx-2">
+      <main className="mx-2 flex-1">
         <Outlet />
       </main>
       <PublicFooter />
