@@ -12,6 +12,7 @@ import { Cart } from "./routes/Cart";
 import { Category } from "./routes/categories/Category";
 import { Search } from "./routes/Search";
 import { News } from "./routes/News";
+import { Checkout } from "./routes/Checkout";
 
 //root routes
 const rootRoutePublic = createRootRoute({
@@ -50,26 +51,39 @@ const productRoute = createRoute({
   component: ProductDetails,
 });
 const cartRoute = createRoute({
-    getParentRoute: () => rootRoutePublic,
-    path: "/cart",
-    component: Cart,
-})
+  getParentRoute: () => rootRoutePublic,
+  path: "/cart",
+  component: Cart,
+});
+const checkoutRoute = createRoute({
+  getParentRoute: () => rootRoutePublic,
+  path: "/checkout",
+  component: Checkout,
+});
 const categoryRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
   path: "/categories/$category",
   component: Category,
-})
+});
 const searchRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
   path: "/search",
   component: Search,
-})
+});
 const newsRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
   path: "/news",
   component: News,
-})
+});
 
 //route tree
-const routeTree = rootRoutePublic.addChildren([homeRoute, productRoute, cartRoute, categoryRoute, searchRoute, newsRoute]);
+const routeTree = rootRoutePublic.addChildren([
+  homeRoute,
+  productRoute,
+  cartRoute,
+  checkoutRoute,
+  categoryRoute,
+  searchRoute,
+  newsRoute,
+]);
 export const router = createRouter({ routeTree });
