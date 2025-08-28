@@ -9,11 +9,22 @@ export function Search() {
 
     if (isLoading) return <p>Laddar produkter...</p>
     if (q == 0) return <h1 className="text-2xl text-center my-5">Din sökning måste vara minst ett tecken långt</h1>
-
+    if (!data || data.length === 0) {
+        return (
+                <h1 className="text-2xl text-center my-5">Inga produkter hittade</h1>
+        )
+    }
+    
+    if (data.length === 1) return(
+        <>
+                <h1 className="text-2xl text-center my-5">Hittade 1 produkt</h1>
+                <CardGrid products={data ?? []}/>
+        </>
+    )
 
     return (
                 <>
-                <h1 className="text-2xl text-center my-5">Sökresultat för: {q}</h1>
+                <h1 className="text-2xl text-center my-5">Hittade {data.length} produkter</h1>
                 <CardGrid products={data ?? []}/>
                 </>
     )
