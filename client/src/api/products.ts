@@ -25,7 +25,7 @@ async function fetchProductBySlug(slug: string): Promise<Product> {
 
 // react query hooks
 
-export function useProducts(params: { category?: string; q?: string }) {
+export function useProducts(params: { category?: string; q?: string; new?: string }) {
   return useQuery<Product[]>({
     queryKey: ["products", params],
     queryFn: () => fetchProducts(params),
