@@ -11,7 +11,7 @@ app.use(express.json());
 const today = new Date().toISOString().split("T")[0];
 
 app.get("/api/products", (req, res) => {
-  const { category, search } = req.query;
+  const { category, q } = req.query;
   const params = [today];
 
   let query = "SELECT * FROM products WHERE product_published <= ?";
@@ -21,9 +21,9 @@ app.get("/api/products", (req, res) => {
     params.push(category);
   }
 
-  if (search) {
-    query += " AND (product_name LIKE ? OR product_description LIKE ?";
-    params.push(`%${search}%`, `%${search}%`);
+  if (q) {
+    query += " AND (product_name LIKE ? OR product_description LIKE ?)";
+    params.push(`%${q}%`, `%${q}%`);
   }
 
   const products = db.prepare(query).all(...params);
