@@ -1,20 +1,28 @@
+import type { Product } from "@/types";
 import { Link } from "@tanstack/react-router";
 
-export default function Spots() {
-    return (
-        <section className="hidden lg:flex lg:gap-5 lg:my-4 justify-center">
-            <Link to="/" className="relative">
-            <img src="https://placehold.co/600x400" alt="Spot" />
-            <h3 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full font-bold text-2xl"> Fulsnygga papiljotter</h3>
-            </Link>
-            <Link to="/" className="relative">
-            <img src="https://placehold.co/600x400" alt="Spot" />
-            <h3 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full font-bold text-2xl"> Lökringar på burk</h3>
-            </Link>
-            <Link to="/" className="relative">
-            <img src="https://placehold.co/600x400" alt="Spot" />
-            <h3 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full font-bold text-2xl"> Osthyvelsklänning</h3>
-            </Link>
-        </section>
-    )
+type SpotProps = {
+  products: Product[];
+};
+export default function Spots({ products }: SpotProps) {
+  return (
+    <section className="hidden lg:flex lg:gap-10 lg:my-10 justify-center">
+      {products.map((product) => (
+        <Link
+          to="/products/$slug"
+          params={{ slug: product.product_slug }}
+          className="relative flex-1"
+        >
+          <img
+            src={product.product_image}
+            alt={product.product_name}
+            className="aspect-3/2 object-cover w-full"
+          />
+          <h3 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full font-bold text-2xl">
+            {product.product_name}
+          </h3>
+        </Link>
+      ))}
+    </section>
+  );
 }
