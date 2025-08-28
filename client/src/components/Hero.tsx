@@ -1,24 +1,27 @@
+
+import type { Product } from "@/types";
 import { Link } from "@tanstack/react-router";
 
-export function Hero() {
+type HeroProps = {
+product: Product
+}
+
+export function Hero({product}: HeroProps) {
   return (
     <section className="border-1 flex items-center justify-center flex-col lg:flex-row-reverse lg:items-start">
-      <Link to="/" className="">
+      <Link to="/products/$slug" params={{ slug: product.product_slug }} className="flex-2 w-full p-5">
         <img
-          src="https://placehold.co/600x400"
-          alt="Heroproduct"
-          className="p-2"
+          src={product.product_image}
+          alt={product.product_name}
+          className="aspect-3/2 object-cover w-full"
         />
       </Link>
-      <div className="p-2 text-center">
-        <h2 className="text-2xl font-bold mt-4">Guldgröna galosher</h2>
+      <div className="text-center flex-1 p-10">
+        <h2 className="text-2xl font-bold mt-4">{product.product_name}</h2>
         <p className="max-w-lg mt-4">
-          Finfina vattentäta galosher som ger omgivningen nackspärr. Ett
-          helsäkert sätt att varje gång komma in på Ellstorps kvarterskrog.
-          Tyvärr inte nog för att komma in på biljarden dock.
+          {product.product_description}
         </p>
       </div>
     </section>
   );
 }
-//TODO - dynamisk 
