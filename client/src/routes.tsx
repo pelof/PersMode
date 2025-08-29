@@ -19,6 +19,7 @@ import { Register } from "./routes/Register";
 import { ProductList } from "./routes/admin/ProductList";
 import { AdminHeader } from "./components/AdminHeader";
 import { AdminSidebar } from "./components/AdminSidebar";
+import { NewProduct } from "./routes/admin/NewProduct";
 
 //root route
 
@@ -120,6 +121,11 @@ const productListRoute = createRoute({
   path: "/admin/products",
   component: ProductList,
 });
+const newProductRoute = createRoute({
+  getParentRoute: () => rootRouteAdmin,
+  path: "/admin/products/new",
+  component: NewProduct,
+});
 
 //route tree
 const routeTree = rootRoute.addChildren([
@@ -138,6 +144,7 @@ const routeTree = rootRoute.addChildren([
   ]),
   rootRouteAdmin.addChildren([
     productListRoute,
+    newProductRoute,
   ]),
 ]);
 export const router = createRouter({ routeTree });
