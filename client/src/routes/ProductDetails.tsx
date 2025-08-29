@@ -4,7 +4,9 @@ import { useParams } from "@tanstack/react-router";
 import { useProduct } from "../api/products";
 
 export function ProductDetails() {
-  const { slug } = useParams({ from: "/products/$slug"});
+  // inte säkraste sättet, men funkar
+  const { slug } = useParams({ strict: false });
+
 
   const { data: product, isLoading, error } = useProduct(slug);
 

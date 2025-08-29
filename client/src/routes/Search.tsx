@@ -3,7 +3,7 @@ import { CardGrid } from "@/components/CardGrid";
 import { useSearch } from "@tanstack/react-router";
 
 export function Search() {
-    const { q }= useSearch({ from: "/search" })
+    const { q } = useSearch({ strict: false });
 
     const {data, isLoading} = useProducts({ q })
 

@@ -5,7 +5,9 @@ import { useProducts } from "../../api/products";
 
 
 export function Category() {
-    const { category } = useParams({ from: "/categories/$category" });
+    // const { category } = useParams({ from: "/categories/$category" });
+        const { category } = useParams({ strict: false });
+    
 
     //TODO till types-fil
     const categoryNames: Record<string, string> ={
