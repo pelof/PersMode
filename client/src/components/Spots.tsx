@@ -9,6 +9,7 @@ export default function Spots({ products }: SpotProps) {
     <section className="hidden lg:flex lg:gap-10 lg:my-10 justify-center">
       {products.map((product) => (
         <Link
+         key={product.product_slug}
           to="/products/$slug"
           params={{ slug: product.product_slug }}
           className="relative flex-1"
