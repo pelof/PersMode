@@ -50,5 +50,17 @@ app.get("/api/admin/products", (req, res) => {
   res.json(products);
 });
 
+app.delete("/api/admin/products/:sku", (req, res) => {
+  const { sku } = req.params;
+
+  const stmt = db.prepare("DELETE FROM products WHERE product_SKU = ?")
+  const info = stmt.run(sku);
+
+  if (info.changes === 0) {
+      return res.status(404).json({ error: "Produkten hittades inte" });
+  }
+  res.json({success: true})
+})
+
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server kör på http://localhost:${PORT}`));
