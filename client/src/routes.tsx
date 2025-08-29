@@ -16,9 +16,20 @@ import { Checkout } from "./routes/Checkout";
 import { Confirmation } from "./routes/Confirmation";
 import { Login } from "./routes/Login";
 import { Register } from "./routes/Register";
+import { ProductList } from "./routes/admin/ProductList";
+import { AdminHeader } from "./components/AdminHeader";
+import { AdminSidebar } from "./components/AdminSidebar";
 
-//root routes
-const rootRoutePublic = createRootRoute({
+//root route
+
+const rootRoute = createRootRoute({
+  component: () => <Outlet />,
+});
+
+// public-route
+const rootRoutePublic = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "public",
   component: () => (
     <div className="max-w-screen-2xl mx-auto flex flex-col justify-center w-full min-h-screen">
       <PublicHeader />
@@ -30,16 +41,25 @@ const rootRoutePublic = createRootRoute({
   ),
 });
 
-//TODO implementera admin-route
-// const rootRouteAdmin = createRootRoute({
-//     component: () => (
-//         <div>
-//             <header>Admin header</header>
-//             <aside>Admin sidebar</aside>
-//             <main><Outlet/></main>
-//         </div>
-//     )
-// });
+
+// admin-route
+const rootRouteAdmin = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "admin",
+  component: () => (
+    <div className="flex flex-col min-h-screen">
+      <AdminHeader />
+      <div className="flex flex-1">
+        <AdminSidebar/>
+
+        <main className="flex-1 m-10">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  ),
+});
+
 
 //child routes
 
@@ -94,17 +114,32 @@ const newsRoute = createRoute({
   component: News,
 });
 
+// adminsidor
+const productListRoute = createRoute({
+  getParentRoute: () => rootRouteAdmin,
+  path: "/admin/products",
+  component: ProductList,
+});
+
 //route tree
-const routeTree = rootRoutePublic.addChildren([
-  homeRoute,
-  productRoute,
-  cartRoute,
-  checkoutRoute,
-  confirmationRoute,
-  loginRoute,
-  registerRoute,
-  categoryRoute,
-  searchRoute,
-  newsRoute,
+const routeTree = rootRoute.addChildren([
+  rootRoutePublic.addChildren([
+
+    homeRoute,
+    productRoute,
+    cartRoute,
+    checkoutRoute,
+    confirmationRoute,
+    loginRoute,
+    registerRoute,
+    categoryRoute,
+    searchRoute,
+    newsRoute,
+  ]),
+  rootRouteAdmin.addChildren([
+    productListRoute,
+  ]),
 ]);
 export const router = createRouter({ routeTree });
+
+
