@@ -15,6 +15,7 @@ import { News } from "./routes/News";
 import { Checkout } from "./routes/Checkout";
 import { Confirmation } from "./routes/Confirmation";
 import { Login } from "./routes/Login";
+import { Register } from "./routes/Register";
 
 //root routes
 const rootRoutePublic = createRootRoute({
@@ -72,6 +73,11 @@ const loginRoute = createRoute({
   path: "/login",
   component: Login,
 });
+const registerRoute = createRoute({
+  getParentRoute: () => rootRoutePublic,
+  path: "/register",
+  component: Register,
+});
 const categoryRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
   path: "/categories/$category",
@@ -96,6 +102,7 @@ const routeTree = rootRoutePublic.addChildren([
   checkoutRoute,
   confirmationRoute,
   loginRoute,
+  registerRoute,
   categoryRoute,
   searchRoute,
   newsRoute,
