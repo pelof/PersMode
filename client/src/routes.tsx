@@ -14,6 +14,7 @@ import { Search } from "./routes/Search";
 import { News } from "./routes/News";
 import { Checkout } from "./routes/Checkout";
 import { Confirmation } from "./routes/Confirmation";
+import { Login } from "./routes/Login";
 
 //root routes
 const rootRoutePublic = createRootRoute({
@@ -66,6 +67,11 @@ const confirmationRoute = createRoute({
   path: "/order/confirmation",
   component: Confirmation,
 });
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoutePublic,
+  path: "/login",
+  component: Login,
+});
 const categoryRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
   path: "/categories/$category",
@@ -89,6 +95,7 @@ const routeTree = rootRoutePublic.addChildren([
   cartRoute,
   checkoutRoute,
   confirmationRoute,
+  loginRoute,
   categoryRoute,
   searchRoute,
   newsRoute,
