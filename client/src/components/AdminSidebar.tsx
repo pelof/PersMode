@@ -4,12 +4,12 @@ import { Link, useMatchRoute } from "@tanstack/react-router";
 export function AdminSidebar() {
 
   // Kolla om vi är på products eller categories
-  const matchProducts =
-    useMatchRoute()({ to: "/admin/products" }) ||
-    useMatchRoute()({ to: "/admin/products/*" });
-  const matchCategories =
-    useMatchRoute()({ to: "/admin/categories" }) ||
-    useMatchRoute()({ to: "/admin/categories/*" });
+const matchProductsFn = useMatchRoute();
+const matchCategoriesFn = useMatchRoute();
+
+const matchProducts = matchProductsFn({ to: "/admin/products/new" }) || matchProductsFn({ to: "/admin/products"});
+const matchCategories = matchCategoriesFn({ to: "/admin/categories/new" }) || matchCategoriesFn({ to: "/admin/categories"});
+
 
   return (
     <aside className="flex flex-col bg-gray-300 w-40 border-r-2 border-black py-3">
@@ -29,6 +29,7 @@ export function AdminSidebar() {
       >
         Kategorier
       </Link>
+
     </aside>
   );
 }

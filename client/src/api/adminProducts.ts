@@ -30,10 +30,10 @@ export function useAdminProducts() {
 export function useDeleteProduct() {
     const queryClient = useQueryClient();
 
-    return useMutation<string, Error, string>({
+    return useMutation({
         mutationFn: deleteAdminProduct,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["adminProducts"] });
-        }
+        },
     })
 }
