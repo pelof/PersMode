@@ -148,6 +148,18 @@ app.post("/api/cart/remove", (req, res) => {
   res.json(req.session.cart);
 });
 
+app.post("/api/cart/update", (req, res) => {
+  const { product_SKU, quantity } = req.body;
+  if (!req.session.cart) req.session.cart = [];
+
+  const item = req.session.cart.find( i => i.product_SKU === product_SKU);
+  if (item) {
+    item.quantity = quantity;
+  }
+  
+  res.json(req.session.cart);
+});
+
 app.post("/api/cart/clear", (req, res) => {
   req.session.cart = [];
   res.json([]);

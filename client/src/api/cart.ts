@@ -1,38 +1,6 @@
-// import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-
-
-// //Hämta cart
-// export function useCart() {
-//   return useQuery({
-//     queryKey: ["cart"],
-//     queryFn: () => fetch("http://localhost:5000/api/cart").then((res) => res.json()),
-//   });
-// }
-
-// //Lägg till produkt
-// export function useAddToCart() {
-//   const queryClient = useQueryClient();
-//   return useMutation({
-//     mutationFn: ({
-//       productId,
-//       quantity,
-//     }: {
-//       productId: string;
-//       quantity: number;
-//     }) =>
-//       fetch("http://localhost:5000/api/cart/add", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ productId, quantity }),
-//       }).then((res) => res.json()),
-
-//     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cart"] }),
-//   });
-// }
-
-// api/cart.ts
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+
 
 // --- GET CART ---
 export function useCart() {
@@ -73,6 +41,18 @@ export function useRemoveFromCart() {
       }).then((res) => res.json()),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cart"] }),
   });
+}
+
+// --- UPDATE CART ---
+export function useUpdateCart() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ product_SKU, quantity}: { product_SKU: String; quantity: number }) =>
+            axios.post("http://localhost:5000/api/cart/update", { product_SKU, quantity}, {withCredentials: true}),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["cart"]});
+        },
+    });
 }
 
 //TODO: i products använde jag API_URL, men funkade inte förut. testa igen

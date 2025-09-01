@@ -1,4 +1,4 @@
-import { useCart, useRemoveFromCart } from "@/api/cart";
+import { useCart, useRemoveFromCart, useUpdateCart } from "@/api/cart";
 import type { Product } from "@/types";
 import { Link } from "@tanstack/react-router";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -6,6 +6,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 export function CartContents() {
   const { data, isLoading } = useCart();
   const removeFromCart = useRemoveFromCart();
+  const updateCart = useUpdateCart();
 
   if (isLoading) return <p>Laddar...</p>;
 
@@ -37,7 +38,13 @@ export function CartContents() {
                     type="number"
                     min="1"
                     className="border-2 rounded max-w-15 px-1"
-                    defaultValue={product.quantity}
+                    value={product.quantity}
+                    onChange={(e) => 
+                      updateCart.mutate({
+                        product_SKU: product.product_SKU,
+                        quantity: Number(e.target.value),
+                      })
+                    }
                   />
                   <button className="p-1 text-2xl cursor-pointer" onClick={() => removeFromCart.mutate({ product_SKU: product.product_SKU })}>
                     <FaRegTrashAlt />
@@ -72,7 +79,13 @@ export function CartContents() {
                   <input
                     type="number"
                     min="1"
-                    defaultValue={product.quantity}
+                    value={product.quantity}
+                    onChange={(e) => 
+                      updateCart.mutate({
+                        product_SKU: product.product_SKU,
+                        quantity: Number(e.target.value),
+                      })
+                    }
                     className="border-2 rounded max-w-15 px-1 border-gray-300 bg-gray-100"
                   />
 
