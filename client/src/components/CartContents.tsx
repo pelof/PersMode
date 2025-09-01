@@ -1,10 +1,11 @@
-import { useCart } from "@/api/cart";
+import { useCart, useRemoveFromCart } from "@/api/cart";
 import type { Product } from "@/types";
 import { Link } from "@tanstack/react-router";
 import { FaRegTrashAlt } from "react-icons/fa";
 
 export function CartContents() {
   const { data, isLoading } = useCart();
+  const removeFromCart = useRemoveFromCart();
 
   if (isLoading) return <p>Laddar...</p>;
 
@@ -16,6 +17,7 @@ export function CartContents() {
   const total = cartItems.reduce(
     (sum, product) => sum + product.product_price * product.quantity, 0
   );
+
 
   return (
     <>
@@ -35,9 +37,9 @@ export function CartContents() {
                     type="number"
                     min="1"
                     className="border-2 rounded max-w-15 px-1"
-                    value={product.quantity}
+                    defaultValue={product.quantity}
                   />
-                  <button className="p-1 text-2xl cursor-pointer">
+                  <button className="p-1 text-2xl cursor-pointer" onClick={() => removeFromCart.mutate({ product_SKU: product.product_SKU })}>
                     <FaRegTrashAlt />
                   </button>
                 </div>
@@ -59,7 +61,7 @@ export function CartContents() {
           </thead>
           <tbody className="divide-y">
             {cartItems.map((product: Product) => 
-            <tr className="divide-x odd:bg-gray-200 divide-gray-300">
+            <tr className="divide-x odd:bg-gray-200 divide-gray-300" key={product.product_SKU}>
               <td className="px-2 py-1">
                 <Link to="/products/$slug" params={{ slug: product.product_slug }}>{product.product_name}</Link>
               </td>
@@ -70,11 +72,11 @@ export function CartContents() {
                   <input
                     type="number"
                     min="1"
-                    value={product.quantity}
+                    defaultValue={product.quantity}
                     className="border-2 rounded max-w-15 px-1 border-gray-300 bg-gray-100"
                   />
 
-                  <button className="p-1 text-2xl cursor-pointer">
+                  <button className="p-1 text-2xl cursor-pointer" onClick={() => removeFromCart.mutate({ product_SKU: product.product_SKU })}>
                     <FaRegTrashAlt />
                   </button>
                 </div>

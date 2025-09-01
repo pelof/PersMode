@@ -59,3 +59,20 @@ export function useAddToCart() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cart"] }),
   });
 }
+
+// --- REMOVE FROM CART ---
+export function useRemoveFromCart() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ product_SKU }: { product_SKU: string}) =>
+            fetch("http://localhost:5000/api/cart/remove", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // <- måste vara med
+        body: JSON.stringify({ product_SKU }),
+      }).then((res) => res.json()),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cart"] }),
+  });
+}
+
+//TODO: i products använde jag API_URL, men funkade inte förut. testa igen
