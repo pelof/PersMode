@@ -37,4 +37,3 @@ export function ProductCard({ product, hideNewsBadge }: ProductCardProps) {
         </article>
     )
 }
-// TODO: bugg i productdetaillänkar och spots

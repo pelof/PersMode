@@ -29,6 +29,7 @@ export function useProducts(params: { category?: string; q?: string; new?: strin
   return useQuery<Product[]>({
     queryKey: ["products", params],
     queryFn: () => fetchProducts(params),
+    enabled: !!params,
   });
 }
 
@@ -37,5 +38,13 @@ export function useProduct(slug: string): UseQueryResult<Product, Error> {
     queryKey: ["product", slug],
     queryFn: () => fetchProductBySlug(slug),
     enabled: !!slug,
+  });
+}
+
+export function useSimilarProducts(excludeSlug: string){
+  return useQuery<Product[]>({
+    queryKey: ["similarProducts", excludeSlug],
+    queryFn: () => fetchProducts({ exclude: excludeSlug, limit: "8", random: "true"}),
+    enabled: Boolean(!!excludeSlug),
   });
 }
