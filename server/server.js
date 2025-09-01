@@ -11,7 +11,7 @@ app.use(express.json());
 const today = new Date().toISOString().split("T")[0];
 
 app.get("/api/products", (req, res) => {
-  const { category, q } = req.query;
+  const { category, q, exclude, limit, random, new: isNew } = req.query;
   const params = [today];
 
   let query = "SELECT * FROM products WHERE product_published <= ?";
@@ -26,9 +26,26 @@ app.get("/api/products", (req, res) => {
     params.push(`%${q}%`, `%${q}%`);
   }
 
-  if (req.query.new === "true"){
+  if (isNew === "true"){
     query += " AND product_published >= date('now', '-7 days')";
     console.log(query)
+  }
+
+  if (exclude) {
+    query += " AND product_slug != ?";
+    params.push(exclude);
+  }
+
+  if (random === "true") {
+    query += " ORDER BY RANDOM()";
+  } 
+  // else {
+  //   query += " ORDER BY product_published DESC"; //fallback-sortering DESC = descending, alltså nyaste först
+  // }
+
+  if (limit) {
+    query += " LIMIT ?";
+    params.push(Number(limit));
   }
 
   const products = db.prepare(query).all(...params);

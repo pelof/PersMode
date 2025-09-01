@@ -47,7 +47,8 @@ export function ProductDetails() {
         </div>
       </div>
       {/* TODO - liknande produkter dynamisk */}
-      <ProductCarousel/>
+  <ProductCarousel currentSlug={slug} />
+
     </section>
   );
 }
