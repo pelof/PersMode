@@ -23,7 +23,7 @@ export function ProductCard({ product, hideNewsBadge }: ProductCardProps) {
         <div className="relative">
             <img src={product.product_image} alt={product.product_name} className="w-full"/>
             {/* TODO fixa funktionellt */}
-            <FaRegHeart className="absolute right-3 bottom-3 text-4xl"/>
+            <FaRegHeart className="absolute right-3 bottom-3 text-4xl hover:animate-[heartbeat_0.9s_ease-in-out_infinite_]"/>
             {!hideNewsBadge && isNew && (
             <div className="absolute left-4 top-4 bg-black text-white px-2 py-1 rounded">Nyhet</div>
             )}
