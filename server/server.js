@@ -13,8 +13,11 @@ app.use(session({
   cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 } // 1 dag
 }))
 
-app.use(cors());
 app.use(express.json());
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 
 const today = new Date().toISOString().split("T")[0];
 
@@ -69,39 +72,85 @@ app.get("/api/products/:slug", (req, res) => {
     res.json(product)
 })
 
+// Cart
+// app.get("/api/cart", (req, res) => {
+//     console.log("Session:", req.session);
+//   res.json(req.session.cart || []);
+// })
+
+// app.post("/api/cart/add", (req, res) => {
+//   const { productId, quantity = 1 } = req.body;
+//   if (!req.session.cart) req.session.cart = []
+  
+//   const existing = req.session.cart.find(item => item.productId === productId);
+//   if (existing) {
+//     existing.quantity += quantity;
+//   } else {
+//     req.session.cart.push({ productId, quantity });
+//   }
+  
+//   res.json({ cart: req.session.cart });
+//   console.log({cart: req.session.cart})
+// })
+
+// app.post("/api/cart/remove", (req, res) => {
+//   const { productId } = req.body;
+
+//   if (!req.session.cart) req.session.cart = [];
+
+//   req.session.cart = req.session.cart.filter(item => item.productId !== productId);
+
+//   res.json({ cart: req.session.cart });
+
+// });
+
+// app.post("/api/cart/clear", (req, res) => {
+//   req.session.cart = [];
+//   res.json({ cart: [] });
+// });
+
 app.get("/api/cart", (req, res) => {
-  res.json({cart: req.session.cart || []});
-})
+ if (!req.session.cart) req.session.cart = [];
+
+ const cartWithProducts = req.session.cart.map(item => {
+  const product = db.prepare(
+    "SELECT product_name, product_slug, product_price FROM products WHERE product_SKU = ?"
+  ).get(item.product_SKU);
+
+  return {
+    ...item,
+    ...product, //Lägger på namn, pris, slug osv
+  }
+ });
+
+  res.json(cartWithProducts);
+});
 
 app.post("/api/cart/add", (req, res) => {
-  const { productId, quantity = 1 } = req.body;
+  const { product_SKU, quantity = 1 } = req.body;
+  if (!req.session.cart) req.session.cart = [];
 
-  if (!req.session.cart) req.session.cart = []
-  
-  const existing = req.session.cart.find(item => item.productId === productId);
+  const existing = req.session.cart.find(item => item.product_SKU === product_SKU);
   if (existing) {
     existing.quantity += quantity;
   } else {
-    req.session.cart.push({ productId, quantity });
+    req.session.cart.push({ product_SKU, quantity });
   }
 
-  res.json({ cart: req.session.cart });
-})
+  res.json(req.session.cart);
+});
 
 app.post("/api/cart/remove", (req, res) => {
-  const { productId } = req.body;
-
+  const { product_SKU } = req.body;
   if (!req.session.cart) req.session.cart = [];
 
-  req.session.cart = req.session.cart.filter(item => item.productId !== productId);
-
-  res.json({ cart: req.session.cart });
-
+  req.session.cart = req.session.cart.filter(item => item.product_SKU !== product_SKU);
+  res.json(req.session.cart);
 });
 
 app.post("/api/cart/clear", (req, res) => {
   req.session.cart = [];
-  res.json({ cart: [] });
+  res.json([]);
 });
 
 app.get("/api/admin/products", (req, res) => {

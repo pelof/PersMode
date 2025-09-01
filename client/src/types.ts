@@ -10,4 +10,5 @@ export type Product = {
   product_published: string; // ISO-datum (t.ex. "2025-08-26")
   product_category: string;
   product_price: number;
+  quantity: number;
 };
