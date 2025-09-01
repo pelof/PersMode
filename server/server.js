@@ -2,8 +2,16 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const Database = require("better-sqlite3");
+const session = require("express-session");
 
 const db = new Database("./db/persmode.db");
+
+app.use(session({
+  secret:"hemlig hemlighet",
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 } // 1 dag
+}))
 
 app.use(cors());
 app.use(express.json());
@@ -61,6 +69,40 @@ app.get("/api/products/:slug", (req, res) => {
     res.json(product)
 })
 
+app.get("/api/cart", (req, res) => {
+  res.json({cart: req.session.cart || []});
+})
+
+app.post("/api/cart/add", (req, res) => {
+  const { productId, quantity = 1 } = req.body;
+
+  if (!req.session.cart) req.session.cart = []
+  
+  const existing = req.session.cart.find(item => item.productId === productId);
+  if (existing) {
+    existing.quantity += quantity;
+  } else {
+    req.session.cart.push({ productId, quantity });
+  }
+
+  res.json({ cart: req.session.cart });
+})
+
+app.post("/api/cart/remove", (req, res) => {
+  const { productId } = req.body;
+
+  if (!req.session.cart) req.session.cart = [];
+
+  req.session.cart = req.session.cart.filter(item => item.productId !== productId);
+
+  res.json({ cart: req.session.cart });
+
+});
+
+app.post("/api/cart/clear", (req, res) => {
+  req.session.cart = [];
+  res.json({ cart: [] });
+});
 
 app.get("/api/admin/products", (req, res) => {
   const products = db.prepare("SELECT * FROM products").all();
