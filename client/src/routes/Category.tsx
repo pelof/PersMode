@@ -1,6 +1,6 @@
-import { CardGrid } from "../../components/CardGrid";
+import { CardGrid } from "../components/CardGrid";
 import { useParams } from "@tanstack/react-router";
-import { useProducts } from "../../api/products";
+import { useProducts } from "../api/products";
 
 
 

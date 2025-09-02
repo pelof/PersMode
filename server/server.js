@@ -2,19 +2,43 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const Database = require("better-sqlite3");
+const session = require("express-session");
 
 const db = new Database("./db/persmode.db");
 
-app.use(cors());
+app.use(
+  session({
+    secret: "hemlig hemlighet",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 }, // 1 dag
+  })
+);
+
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 const today = new Date().toISOString().split("T")[0];
 
 app.get("/api/products", (req, res) => {
   const { category, q, exclude, limit, random, new: isNew } = req.query;
-  const params = [today];
+  const params = [];
+  // 1=1 gör det enklare att kedja på villkor utan att tänka på första AND
+  let query = "SELECT * FROM products WHERE 1=1";
 
-  let query = "SELECT * FROM products WHERE product_published <= ?";
+  if (isNew === "true") {
+    query +=
+      " AND product_published <= ? AND product_published >= date('now', '-6 days')";
+    params.push(today);
+  } else {
+    query += " AND product_published <= ?";
+    params.push(today);
+  }
 
   if (category) {
     query += " AND product_category = ?";
@@ -26,11 +50,6 @@ app.get("/api/products", (req, res) => {
     params.push(`%${q}%`, `%${q}%`);
   }
 
-  if (isNew === "true"){
-    query += " AND product_published >= date('now', '-7 days')";
-    console.log(query)
-  }
-
   if (exclude) {
     query += " AND product_slug != ?";
     params.push(exclude);
@@ -38,7 +57,7 @@ app.get("/api/products", (req, res) => {
 
   if (random === "true") {
     query += " ORDER BY RANDOM()";
-  } 
+  }
   // else {
   //   query += " ORDER BY product_published DESC"; //fallback-sortering DESC = descending, alltså nyaste först
   // }
@@ -53,14 +72,148 @@ app.get("/api/products", (req, res) => {
 });
 
 app.get("/api/products/:slug", (req, res) => {
-    const { slug } = req.params;
+  const { slug } = req.params;
 
-    const product = db.prepare("SELECT * FROM products WHERE product_published <= ? AND product_slug = ?").get(today, slug);
+  const product = db
+    .prepare(
+      "SELECT * FROM products WHERE product_published <= ? AND product_slug = ?"
+    )
+    .get(today, slug);
 
-    if (!product) return res.status(404).json({error: "Produkten hittades inte "});
-    res.json(product)
-})
+  if (!product)
+    return res.status(404).json({ error: "Produkten hittades inte " });
+  res.json(product);
+});
 
+// Cart
+// app.get("/api/cart", (req, res) => {
+//     console.log("Session:", req.session);
+//   res.json(req.session.cart || []);
+// })
+
+// app.post("/api/cart/add", (req, res) => {
+//   const { productId, quantity = 1 } = req.body;
+//   if (!req.session.cart) req.session.cart = []
+
+//   const existing = req.session.cart.find(item => item.productId === productId);
+//   if (existing) {
+//     existing.quantity += quantity;
+//   } else {
+//     req.session.cart.push({ productId, quantity });
+//   }
+
+//   res.json({ cart: req.session.cart });
+//   console.log({cart: req.session.cart})
+// })
+
+// app.post("/api/cart/remove", (req, res) => {
+//   const { productId } = req.body;
+
+//   if (!req.session.cart) req.session.cart = [];
+
+//   req.session.cart = req.session.cart.filter(item => item.productId !== productId);
+
+//   res.json({ cart: req.session.cart });
+
+// });
+
+// app.post("/api/cart/clear", (req, res) => {
+//   req.session.cart = [];
+//   res.json({ cart: [] });
+// });
+
+app.get("/api/cart", (req, res) => {
+  if (!req.session.cart) req.session.cart = [];
+
+  const cartWithProducts = req.session.cart.map((item) => {
+    const product = db
+      .prepare(
+        "SELECT product_name, product_slug, product_price FROM products WHERE product_SKU = ?"
+      )
+      .get(item.product_SKU);
+
+    return {
+      ...item,
+      ...product, //Lägger på namn, pris, slug osv
+    };
+  });
+
+  res.json(cartWithProducts);
+});
+
+app.post("/api/cart/add", (req, res) => {
+  const { product_SKU, quantity = 1 } = req.body;
+  if (!req.session.cart) req.session.cart = [];
+
+  const existing = req.session.cart.find(
+    (item) => item.product_SKU === product_SKU
+  );
+  if (existing) {
+    existing.quantity += quantity;
+  } else {
+    req.session.cart.push({ product_SKU, quantity });
+  }
+
+  res.json(req.session.cart);
+});
+
+app.post("/api/cart/remove", (req, res) => {
+  const { product_SKU } = req.body;
+  if (!req.session.cart) req.session.cart = [];
+
+  req.session.cart = req.session.cart.filter(
+    (item) => item.product_SKU !== product_SKU
+  );
+  res.json(req.session.cart);
+});
+
+app.post("/api/cart/update", (req, res) => {
+  const { product_SKU, quantity } = req.body;
+  if (!req.session.cart) req.session.cart = [];
+
+  const item = req.session.cart.find((i) => i.product_SKU === product_SKU);
+  if (item) {
+    item.quantity = quantity;
+  }
+
+  res.json(req.session.cart);
+});
+
+app.post("/api/cart/clear", (req, res) => {
+  req.session.cart = [];
+  res.json([]);
+});
+
+app.get("/api/favorites", (req, res) => {
+  if (!req.session.favorites) req.session.favorites = [];
+
+  const placeholders = req.session.favorites.map(() => "?").join(",");
+  let products = [];
+
+  if (placeholders.length > 0) {
+    products = db.prepare(
+      `SELECT * FROM products WHERE product_SKU IN (${placeholders})`
+    ).all(...req.session.favorites);
+  }
+
+  res.json(products);
+});
+
+app.post("/api/favorites/toggle", (req, res) => {
+    const { product_SKU } = req.body;
+  if (!req.session.favorites) req.session.favorites = [];
+
+  const index = req.session.favorites.indexOf(product_SKU);
+  if (index >= 0) {
+    // Om produkten redan finns, sätt isFavorite till false
+    req.session.favorites.splice(index, 1);
+    return res.json({ isFavorite: false, favorites: req.session.favorites });
+  } else {
+    // Om produkten inte finns, sätt isFavorite till true
+    req.session.favorites.push(product_SKU);
+    return res.json({ isFavorite: true, favorites: req.session.favorites });
+  }
+});
 
 app.get("/api/admin/products", (req, res) => {
   const products = db.prepare("SELECT * FROM products").all();
@@ -70,14 +223,14 @@ app.get("/api/admin/products", (req, res) => {
 app.delete("/api/admin/products/:sku", (req, res) => {
   const { sku } = req.params;
 
-  const stmt = db.prepare("DELETE FROM products WHERE product_SKU = ?")
+  const stmt = db.prepare("DELETE FROM products WHERE product_SKU = ?");
   const info = stmt.run(sku);
 
   if (info.changes === 0) {
-      return res.status(404).json({ error: "Produkten hittades inte" });
+    return res.status(404).json({ error: "Produkten hittades inte" });
   }
-  res.json({success: true})
-})
+  res.json({ success: true });
+});
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server kör på http://localhost:${PORT}`));

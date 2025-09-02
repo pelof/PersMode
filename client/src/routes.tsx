@@ -9,7 +9,7 @@ import { PublicHeader } from "./components/PublicHeader";
 import { PublicFooter } from "./components/PublicFooter";
 import { ProductDetails } from "./routes/ProductDetails";
 import { Cart } from "./routes/Cart";
-import { Category } from "./routes/categories/Category";
+import { Category } from "./routes/Category";
 import { Search } from "./routes/Search";
 import { News } from "./routes/News";
 import { Checkout } from "./routes/Checkout";
@@ -20,6 +20,7 @@ import { ProductList } from "./routes/admin/ProductList";
 import { AdminHeader } from "./components/AdminHeader";
 import { AdminSidebar } from "./components/AdminSidebar";
 import { NewProduct } from "./routes/admin/NewProduct";
+import { Favorites } from "./routes/Favorites";
 
 //root route
 
@@ -73,6 +74,11 @@ const productRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
   path: "/products/$slug",
   component: ProductDetails,
+});
+const favoritesRoute = createRoute({
+  getParentRoute: () => rootRoutePublic,
+  path: "/favorites",
+  component: Favorites,
 });
 const cartRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
@@ -133,6 +139,7 @@ const routeTree = rootRoute.addChildren([
 
     homeRoute,
     productRoute,
+    favoritesRoute,
     cartRoute,
     checkoutRoute,
     confirmationRoute,

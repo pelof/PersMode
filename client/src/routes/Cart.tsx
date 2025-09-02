@@ -14,5 +14,3 @@ export function Cart() {
     </>
   );
 }
-
-// TODO dynamisk och itererande
