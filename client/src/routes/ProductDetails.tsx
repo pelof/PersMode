@@ -1,33 +1,42 @@
-import { FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { ProductCarousel } from "../components/ProductCarousel";
 import { useParams } from "@tanstack/react-router";
 import { useProduct } from "../api/products";
 import { useAddToCart } from "@/api/cart";
 import { useState } from "react";
+import { useFavorites, useToggleFavorite } from "@/api/favorites";
 
 export function ProductDetails() {
-  // inte säkraste sättet, men funkar
-  const { slug } = useParams({ strict: false });
-  const { data: product, isLoading, error } = useProduct(slug);
-  const addToCart = useAddToCart();
-  const [quantity, setQuantity] = useState(1);
 
-  if (isLoading) return <p>Laddar...</p>;
-  if (error) return <p>Ett fel uppstod: {error.message}</p>;
-  if (!product) return <p>Produkten kunde inte hittas</p>;
+  
+    
+    // inte säkraste sättet, men funkar
+    const { slug } = useParams({ strict: false });
+    const { data: product, isLoading, error } = useProduct(slug);
+    const addToCart = useAddToCart();
+    const [quantity, setQuantity] = useState(1);
 
-  const handleAddToCart = () => {
-    if (!product) return;
-    addToCart.mutate({ product_SKU: product.product_SKU, quantity });
-  };
+     const { data: favorites } = useFavorites();
+    const toggleFavorite = useToggleFavorite();
+    
+    if (isLoading) return <p>Laddar...</p>;
+    if (error) return <p>Ett fel uppstod: {error.message}</p>;
+    if (!product) return <p>Produkten kunde inte hittas</p>;
+    
+    const handleAddToCart = () => {
+      if (!product) return;
+      addToCart.mutate({ product_SKU: product.product_SKU, quantity });
+    };
+    
+    const today = new Date();
+    const publishedDate = new Date(product.product_published);
+    
+    const diffTime = today.getTime() - publishedDate.getTime();
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+    
+    const isNew = diffDays >= 0 && diffDays < 7;
 
-  const today = new Date();
-  const publishedDate = new Date(product.product_published);
-
-  const diffTime = today.getTime() - publishedDate.getTime();
-  const diffDays = diffTime / (1000 * 60 * 60 * 24);
-
-  const isNew = diffDays >= 0 && diffDays < 7;
+      const isFavorite = favorites?.includes(product.product_SKU);
 
   return (
     <section>
@@ -39,7 +48,15 @@ export function ProductDetails() {
             className="w-full min-w-md"
           />
           {/* TODO fixa funktionellt */}
-          <FaRegHeart className="absolute right-3 bottom-3 text-4xl hover:animate-[heartbeat_0.9s_ease-in-out_infinite_]" />
+          <button
+                      type="button"
+                      onClick={() => {
+                        toggleFavorite.mutate(product.product_SKU);
+                      }}
+                      className="absolute right-3 bottom-3 text-4xl cursor-pointer hover:animate-[heartbeat_0.9s_ease-in-out_infinite_]"
+                    >
+                      {isFavorite ? <FaHeart /> : <FaRegHeart/>}
+                    </button>
           {isNew && (
             <div className="absolute left-4 top-4 bg-black text-white px-2 py-1 rounded">
               Nyhet
