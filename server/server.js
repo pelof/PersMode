@@ -23,9 +23,17 @@ const today = new Date().toISOString().split("T")[0];
 
 app.get("/api/products", (req, res) => {
   const { category, q, exclude, limit, random, new: isNew } = req.query;
-  const params = [today];
+  const params = [];
+// 1=1 gör det enklare att kedja på villkor utan att tänka på första AND
+  let query = "SELECT * FROM products WHERE 1=1";
 
-  let query = "SELECT * FROM products WHERE product_published <= ?";
+  if (isNew === "true") {
+  query += " AND product_published <= ? AND product_published >= date('now', '-6 days')";
+  params.push(today);
+} else {
+  query += " AND product_published <= ?";
+  params.push(today);
+}
 
   if (category) {
     query += " AND product_category = ?";
@@ -35,11 +43,6 @@ app.get("/api/products", (req, res) => {
   if (q) {
     query += " AND (product_name LIKE ? OR product_description LIKE ?)";
     params.push(`%${q}%`, `%${q}%`);
-  }
-
-  if (isNew === "true"){
-    query += " AND product_published >= date('now', '-7 days')";
-    console.log(query)
   }
 
   if (exclude) {
@@ -156,7 +159,7 @@ app.post("/api/cart/update", (req, res) => {
   if (item) {
     item.quantity = quantity;
   }
-  
+
   res.json(req.session.cart);
 });
 

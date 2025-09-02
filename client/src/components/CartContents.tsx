@@ -55,7 +55,6 @@ export function CartContents() {
         )}
       </ul>
 
-      {/* TODO: automatiskt varannan mörkgrå */}
       <div className="mx-10 overflow-x-auto ">
         <table className="hidden md:table table-fixed border w-full border-collapse">
           <thead className="border-1 text-left bg-gray-400">
