@@ -29,7 +29,7 @@ export function PublicHeader() {
           <div className="header-icons flex flex-row gap-2 ml-3 md:gap-3">
             <Link to="/favorites" className="text-3xl md:text-2xl"><FaHeart /></Link>
             <Link to="/cart" className="text-3xl md:text-2xl"><FaBasketShopping /></Link>
-            <Link to="" className="text-4xl md:text-3xl"><IoLogIn /></Link>
+            <Link to="/login" className="text-4xl md:text-3xl"><IoLogIn /></Link>
           </div>
         </div>
       </div>
