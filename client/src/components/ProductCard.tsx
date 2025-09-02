@@ -12,15 +12,13 @@ export function ProductCard({ product, hideNewsBadge }: ProductCardProps) {
   const { data: favorites } = useFavorites();
   const toggleFavorite = useToggleFavorite();
 
-  const isFavorite = favorites?.includes(product.product_SKU);
+const isFavorite = favorites?.some(fav => fav.product_SKU === product.product_SKU);
 
   const today = new Date();
   const publishedDate = new Date(product.product_published);
   const diffDays =
     (today.getTime() - publishedDate.getTime()) / (1000 * 60 * 60 * 24);
   const isNew = diffDays >= 0 && diffDays < 7;
-  // const diffTime = today.getTime() - publishedDate.getTime();
-  // const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
   return (
     <article className="flex flex-col justify-center relative">
@@ -31,7 +29,6 @@ export function ProductCard({ product, hideNewsBadge }: ProductCardProps) {
             alt={product.product_name}
             className="w-full"
           />
-          {/* TODO fixa funktionellt */}
           {!hideNewsBadge && isNew && (
             <div className="absolute left-4 top-4 bg-black text-white px-2 py-1 rounded">
               Nyhet

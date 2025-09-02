@@ -1,10 +1,11 @@
+import type { Product } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 
 const API_URL = "http://localhost:5000/api";
 
-async function fetchFavorites(): Promise<string[]> {
+async function fetchFavorites(): Promise<Product[]> {
     const res = await fetch(`${API_URL}/favorites`, { credentials: "include"});
     if (!res.ok) throw new Error("Failed to fetch favorites");
     return res.json();
@@ -23,7 +24,7 @@ async function toggleFavorite(product_SKU: string) {
 
 // Hook för att hämta alla favoriter
 export function useFavorites() {
-    return useQuery({
+    return useQuery<Product[]>({
         queryKey: ["favorites"],
         queryFn: fetchFavorites,
     });

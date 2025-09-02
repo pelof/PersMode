@@ -35,8 +35,9 @@ export function ProductDetails() {
     const diffDays = diffTime / (1000 * 60 * 60 * 24);
     
     const isNew = diffDays >= 0 && diffDays < 7;
-
-      const isFavorite = favorites?.includes(product.product_SKU);
+    
+    //Letar om produkten finns i favoriter. some returnerar true om minst ett objekt matchar.
+    const isFavorite = favorites?.some(fav => fav.product_SKU === product.product_SKU);
 
   return (
     <section>

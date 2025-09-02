@@ -186,7 +186,17 @@ app.post("/api/cart/clear", (req, res) => {
 
 app.get("/api/favorites", (req, res) => {
   if (!req.session.favorites) req.session.favorites = [];
-  res.json(req.session.favorites);
+
+  const placeholders = req.session.favorites.map(() => "?").join(",");
+  let products = [];
+
+  if (placeholders.length > 0) {
+    products = db.prepare(
+      `SELECT * FROM products WHERE product_SKU IN (${placeholders})`
+    ).all(...req.session.favorites);
+  }
+
+  res.json(products);
 });
 
 app.post("/api/favorites/toggle", (req, res) => {
