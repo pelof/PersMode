@@ -41,8 +41,8 @@ export function ProductCarousel({ currentSlug }: ProductCarouselProps) {
                 params={{ slug: product.product_slug }}
               >
                 <img
-                  src={product.product_image}
-                  className="w-full object-cover rounded-xl shadow"
+                  src={`http://localhost:5000/images/products/${product.product_image}`}
+                  className="w-full object-cover rounded-xl shadow aspect-3/4"
                   alt={product.product_name}
                 />
                 <div className="flex justify-between py-2">

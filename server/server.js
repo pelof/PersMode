@@ -5,6 +5,10 @@ const Database = require("better-sqlite3");
 const session = require("express-session");
 const multer = require("multer");
 const path = require("path");
+// för att interagera med filsystemet
+const fs = require("fs");
+const crypto = require("crypto");
+
 
 const db = new Database("./db/persmode.db");
 
@@ -18,6 +22,11 @@ app.use(
 );
 
 app.use(express.json());
+
+app.use("/images", express.static(path.join(__dirname, "public/images")));
+app.use("/images/products", express.static(path.join(__dirname, "public/images/products")));
+
+
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -25,18 +34,41 @@ app.use(
   })
 );
 
-// Multer inställningar
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "public/images/products"));
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname));
-  },
-});
 
-const upload = multer({ storage });
+// Multer storage med hash-baserat filnamn
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, path.join(__dirname, "public/images/products"));
+//   },
+//   filename: function (req, file, cb) {
+//     // Läs hela filen i minne
+//     const fileBuffer = file.buffer || null;
+
+//     if (fileBuffer) {
+//       // Om filen redan är buffrad (multer kan ibland ge detta direkt)
+//       const hash = crypto.createHash("md5").update(fileBuffer).digest("hex");
+//       const ext = path.extname(file.originalname);
+//       cb(null, `${hash}${ext}`);
+//     } else {
+//       // Om bufferten inte finns: skapa hash av originalnamn + size som fallback
+//       const hash = crypto
+//         .createHash("md5")
+//         .update(file.originalname + Date.now())
+//         .digest("hex");
+//       const ext = path.extname(file.originalname);
+//       cb(null, `${hash}${ext}`);
+//     }
+//   },
+// });
+
+// // Viktigt: använd `storage` + `limits` så multer faktiskt sparar filen
+// const upload = multer({
+//   storage,
+//   limits: { fileSize: 5 * 1024 * 1024 }, // max 5 MB
+// });
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
 
 function generateSlug(product_name) {
   return product_name
@@ -54,29 +86,35 @@ app.get("/api/products", (req, res) => {
   const { category, q, exclude, limit, random, new: isNew } = req.query;
   const params = [];
   // 1=1 gör det enklare att kedja på villkor utan att tänka på första AND
-  let query = "SELECT * FROM products WHERE 1=1";
+  // let query = "SELECT * FROM products WHERE 1=1";
+    let query = `
+    SELECT DISTINCT p.* 
+    FROM products p
+    LEFT JOIN product_categories pc ON p.product_SKU = pc.product_SKU
+    WHERE 1=1
+  `;
 
   if (isNew === "true") {
     query +=
-      " AND product_published <= ? AND product_published >= date('now', '-6 days')";
+      " AND p.product_published <= ? AND p.product_published >= date('now', '-6 days')";
     params.push(today);
   } else {
-    query += " AND product_published <= ?";
+    query += " AND p.product_published <= ?";
     params.push(today);
   }
 
   if (category) {
-    query += " AND product_category = ?";
+    query += " AND pc.category_id = ?";
     params.push(category);
   }
 
   if (q) {
-    query += " AND (product_name LIKE ? OR product_description LIKE ?)";
+    query += " AND (p.product_name LIKE ? OR p.product_description LIKE ?)";
     params.push(`%${q}%`, `%${q}%`);
   }
 
   if (exclude) {
-    query += " AND product_slug != ?";
+    query += " AND p.product_slug != ?";
     params.push(exclude);
   }
 
@@ -92,8 +130,13 @@ app.get("/api/products", (req, res) => {
     params.push(Number(limit));
   }
 
-  const products = db.prepare(query).all(...params);
-  res.json(products);
+  try {
+    const products = db.prepare(query).all(...params);
+    res.json(products);
+  } catch (err) {
+    console.error("Fel i /api/products:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 app.get("/api/products/:slug", (req, res) => {
@@ -331,7 +374,38 @@ app.post("/api/products", upload.single("image"), (req, res) => {
     return res.status(400).json({ error: "Alla fält måste vara ifyllda" });
   }
 
-  const product_image = req.file ? `/public/images/products/${req.file.filename}` : null;
+  // const product_image = req.file ? `/public/images/products/${req.file.filename}` : null;
+  // const product_image = req.file ? req.file.filename : null;
+
+  let product_image = null;
+
+  // if (req.file) {
+  //   const filePath = path.join(__dirname, "public/images/products", req.file.filename);
+
+  //   if (fs.existsSync(filePath)) {
+  //     // Filen finns redan, använd samma namn
+  //     product_image = req.file.filename;
+  //   } else {
+  //     // Detta borde inte hända, men fallback
+  //     product_image = req.file.filename;
+  //   }
+  // }
+
+if (req.file) {
+    // Skapa hash av filens innehåll
+    const hash = crypto.createHash("md5").update(req.file.buffer).digest("hex");
+    const ext = path.extname(req.file.originalname);
+    const filename = `${hash}${ext}`;
+    const filePath = path.join(__dirname, "public/images/products", filename);
+
+    // Spara bara om filen inte redan finns
+    if (!fs.existsSync(filePath)) {
+      fs.writeFileSync(filePath, req.file.buffer);
+    }
+
+    product_image = filename;
+  }
+
   const slug = generateSlug(product_name);
 
   try {
@@ -371,17 +445,92 @@ app.get("/api/categories", (req, res) => {
   res.json(categories);
 });
 
+// app.delete("/api/admin/products/:sku", (req, res) => {
+//   const { sku } = req.params;
+
+//   // Hämta filnamn för bild
+//   try {
+//     const product = db.prepare("SELECT product_image FROM products WHERE product_SKU = ?").get(sku);
+
+//     if (!product) {
+//       return res.status(404).json({ error: "Produkten hittades inte" });
+//     }
+//     // Ta bort produkt från databas
+//     const stmt = db.prepare("DELETE FROM products WHERE product_SKU = ?");
+//     const info = stmt.run(sku);
+  
+//     if (info.changes === 0) {
+//       return res.status(404).json({ error: "Produkten hittades inte" });
+//     }
+//     // Ta bort filen från disk om den finns
+//     if (product.product_image) {
+//       const filePath = path.join(__dirname, "public/images/products", product.product_image);
+      
+//       fs.unlink(filePath, (err) => {
+//         if (err) {
+//           console.error("Kunde inte ta bort bildfil:", err)
+//         }
+//       });
+
+//     }
+//     res.json({ success: true });
+//   } catch (err) {
+//     console.error("Fel vid borttagning av produkt:", err);
+//     res.status(500).json({ error: "Ett fel uppstod" });
+//   }
+// });
 app.delete("/api/admin/products/:sku", (req, res) => {
   const { sku } = req.params;
 
-  const stmt = db.prepare("DELETE FROM products WHERE product_SKU = ?");
-  const info = stmt.run(sku);
+  try {
+    const product = db
+      .prepare("SELECT product_image FROM products WHERE product_SKU = ?")
+      .get(sku);
 
-  if (info.changes === 0) {
-    return res.status(404).json({ error: "Produkten hittades inte" });
+    if (!product) {
+      return res.status(404).json({ error: "Produkten hittades inte" });
+    }
+
+    // Ta bort produkt från databasen
+    const stmt = db.prepare("DELETE FROM products WHERE product_SKU = ?");
+    const info = stmt.run(sku);
+
+    if (info.changes === 0) {
+      return res.status(404).json({ error: "Produkten hittades inte" });
+    }
+
+    // Kolla om någon annan använder samma bild innan vi raderar den
+    if (product.product_image) {
+      const otherUsers = db
+        .prepare("SELECT COUNT(*) as count FROM products WHERE product_image = ?")
+        .get(product.product_image);
+
+      // if (otherUsers.count === 0) {
+      //   const filePath = path.join(
+      //     __dirname,
+      //     "public/images/products",
+      //     product.product_image
+      //   );
+
+      //   fs.unlink(filePath, (err) => {
+      //     if (err) console.error("Kunde inte ta bort bildfil:", err);
+      //   });
+      // }
+    if (otherUsers.count === 0) {
+        const filePath = path.join(__dirname, "public/images/products", product.product_image);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Ett fel uppstod" });
   }
-  res.json({ success: true });
 });
+
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server kör på http://localhost:${PORT}`));

@@ -44,9 +44,10 @@ export function ProductDetails() {
       <div className="flex flex-col md:flex-row">
         <div className="relative">
           <img
-            src={product.product_image}
+              src={`http://localhost:5000/images/products/${product.product_image}`}
+
             alt={product.product_name}
-            className="w-full min-w-md"
+            className="w-full min-w-md aspect-3/4"
           />
           {/* TODO fixa funktionellt */}
           <button

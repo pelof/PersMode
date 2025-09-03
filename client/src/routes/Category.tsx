@@ -8,7 +8,7 @@ export function Category() {
     // const { category } = useParams({ from: "/categories/$category" });
         const { category } = useParams({ strict: false });
     
-
+//TODO kategorier från databasen
     //TODO till types-fil
     const categoryNames: Record<string, string> ={
         clothing: "Kläder",
@@ -22,7 +22,6 @@ export function Category() {
     const displayName = categoryNames[category] ?? category;
 
     const { data, isLoading } = useProducts({ category })
-//TODO lägg till "inget svar från databasen" eller liknande när sökningen tar för lång tid.
     if (isLoading) return <p> Laddar... </p>
 
     return (
