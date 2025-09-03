@@ -31,7 +31,7 @@ export function ProductList() {
         </thead>
         <tbody className="border border-black">
           {data?.map((product) => (
-            <tr className="divide-x divide-black odd:bg-gray-200">
+            <tr className="divide-x divide-black odd:bg-gray-200" key={product.product_SKU}>
               <td className="px-4 py-1">{product.product_name}</td>
               <td className="px-4 py-1">{product.product_SKU}</td>
               <td className="px-4 py-1">{product.product_price}</td>

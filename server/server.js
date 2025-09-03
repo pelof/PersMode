@@ -3,6 +3,8 @@ const cors = require("cors");
 const app = express();
 const Database = require("better-sqlite3");
 const session = require("express-session");
+const multer = require("multer");
+const path = require("path");
 
 const db = new Database("./db/persmode.db");
 
@@ -22,6 +24,29 @@ app.use(
     credentials: true,
   })
 );
+
+// Multer inställningar
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "public/images/products"));
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
+
+function generateSlug(product_name) {
+  return product_name
+    .toLowerCase()
+    .replace(/å/g, "a")
+    .replace(/ä/g, "a")
+    .replace(/ö/g, "o")
+    .replace(/[^a-z0-9]+/g, "-") // Byt ut specialtecken mot "-"
+    .replace(/^-|-$/g, ""); // Ta bort "-" i början eller slutet
+}
 
 const today = new Date().toISOString().split("T")[0];
 
@@ -191,16 +216,16 @@ app.get("/api/favorites", (req, res) => {
   let products = [];
 
   if (placeholders.length > 0) {
-    products = db.prepare(
-      `SELECT * FROM products WHERE product_SKU IN (${placeholders})`
-    ).all(...req.session.favorites);
+    products = db
+      .prepare(`SELECT * FROM products WHERE product_SKU IN (${placeholders})`)
+      .all(...req.session.favorites);
   }
 
   res.json(products);
 });
 
 app.post("/api/favorites/toggle", (req, res) => {
-    const { product_SKU } = req.body;
+  const { product_SKU } = req.body;
   if (!req.session.favorites) req.session.favorites = [];
 
   const index = req.session.favorites.indexOf(product_SKU);
@@ -218,6 +243,132 @@ app.post("/api/favorites/toggle", (req, res) => {
 app.get("/api/admin/products", (req, res) => {
   const products = db.prepare("SELECT * FROM products").all();
   res.json(products);
+});
+
+// för lägga till en produkt
+// app.post("/api/products", upload.single("image"), (req, res) => {
+//   const {
+//     product_name,
+//     product_description,
+//     product_image,
+//     product_brand,
+//     product_SKU,
+//     product_price,
+//     product_published,
+//     category_ids,
+//   } = req.body;
+
+//   if (
+//     !product_name ||
+//     !product_description ||
+//     !product_image ||
+//     !product_brand ||
+//     !product_SKU ||
+//     !product_price ||
+//     !product_published ||
+//     !Array.isArray(category_ids)
+//   ) {
+//     return res.status(400).json({ error: "Alla fält måste vara ifyllda" });
+//   }
+
+
+
+//   try {
+//     const slug = generateSlug(product_name);
+
+//     const stmt = db.prepare(`
+//       INSERT INTO products (product_name, product_description, product_image, product_brand, product_SKU, product_price, product_published, product_slug) 
+//       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+//     `);
+
+
+//     stmt.run(
+//       product_name,
+//       product_description,
+//       product_image,
+//       product_brand,
+//       product_SKU,
+//       product_price,
+//       product_published,
+//       slug
+//     );
+
+//         // Koppla kategorier
+//     const insertCat = db.prepare(
+//       "INSERT INTO product_categories (product_SKU, category_id) VALUES (?, ?)"
+//     );
+//     for (const catId of category_ids) {
+//       insertCat.run(product_SKU, catId);
+//     }
+
+//     res.status(201).json({ message: "Produkt tillagd!" });
+//   } catch (error) {
+//     console.error("Fel vid tillägg av produkt:", error);
+//     res.status(500).json({ error: "Något gick fel vid sparandet" });
+//   }
+// });
+
+app.post("/api/products", upload.single("image"), (req, res) => {
+  const {
+    product_name,
+    product_description,
+    product_brand,
+    product_SKU,
+    product_price,
+    product_published,
+    category_ids,
+  } = req.body;
+
+  if (
+    !product_name ||
+    !product_description ||
+    !product_brand ||
+    !product_SKU ||
+    !product_price ||
+    !product_published ||
+    !Array.isArray(JSON.parse(category_ids || "[]"))
+  ) {
+    return res.status(400).json({ error: "Alla fält måste vara ifyllda" });
+  }
+
+  const product_image = req.file ? `/public/images/products/${req.file.filename}` : null;
+  const slug = generateSlug(product_name);
+
+  try {
+    const stmt = db.prepare(`
+      INSERT INTO products 
+      (product_name, product_description, product_image, product_brand, product_SKU, product_price, product_published, product_slug) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    stmt.run(
+      product_name,
+      product_description,
+      product_image,
+      product_brand,
+      product_SKU,
+      product_price,
+      product_published,
+      slug
+    );
+
+    // Koppla kategorier
+    const insertCat = db.prepare(
+      "INSERT INTO product_categories (product_SKU, category_id) VALUES (?, ?)"
+    );
+    for (const catId of JSON.parse(category_ids)) {
+      insertCat.run(product_SKU, catId);
+    }
+
+    res.status(201).json({ message: "Produkt tillagd!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Något gick fel vid sparandet" });
+  }
+});
+
+app.get("/api/categories", (req, res) => {
+  const categories = db.prepare("SELECT * FROM categories").all();
+  res.json(categories);
 });
 
 app.delete("/api/admin/products/:sku", (req, res) => {
