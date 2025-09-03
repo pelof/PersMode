@@ -21,6 +21,8 @@ import { AdminHeader } from "./components/AdminHeader";
 import { AdminSidebar } from "./components/AdminSidebar";
 import { NewProduct } from "./routes/admin/NewProduct";
 import { Favorites } from "./routes/Favorites";
+import { CategoryList } from "./routes/admin/CategoryList";
+import { NewCategory } from "./routes/admin/NewCategory";
 
 //root route
 
@@ -132,6 +134,16 @@ const newProductRoute = createRoute({
   path: "/admin/products/new",
   component: NewProduct,
 });
+const categoryListRoute = createRoute({
+  getParentRoute: () => rootRouteAdmin,
+  path: "/admin/categories",
+  component: CategoryList,
+});
+const newCategoryRoute = createRoute({
+  getParentRoute: () => rootRouteAdmin,
+  path: "/admin/categories/new",
+  component: NewCategory,
+});
 
 //route tree
 const routeTree = rootRoute.addChildren([
@@ -152,6 +164,8 @@ const routeTree = rootRoute.addChildren([
   rootRouteAdmin.addChildren([
     productListRoute,
     newProductRoute,
+    categoryListRoute,
+    newCategoryRoute,
   ]),
 ]);
 export const router = createRouter({ routeTree });
