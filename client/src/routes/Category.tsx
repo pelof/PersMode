@@ -19,7 +19,7 @@ const { data: products, isLoading } = useProducts({
 if (catsLoading) return <p>Laddar kategorier...</p>;
 
 if (!category) {
-    return <p>Kategorin hittades inte</p>;
+    return <p>Kategorin "{categorySlug}" hittades inte</p>;
 }
 
   if (isLoading) return <p>Laddar produkter...</p>;

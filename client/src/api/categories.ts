@@ -23,7 +23,7 @@ export function useCategories() {
     });
 }
 
-
+//TODO bilden tas inte bort när kategorin tas bort
 export function useDeleteCategory() {
     const queryClient = useQueryClient();
 

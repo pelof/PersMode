@@ -457,6 +457,53 @@ app.delete("/api/categories/:slug", (req, res) => {
   res.json({ success: true });
 });
 
+app.post("/api/categories", upload.single("image"), (req, res) => {
+  const { name } = req.body;
+  
+  if (
+    !name
+  ) {
+    return res.status(400).json({ error: "Alla fält måste vara ifyllda" });
+  }
+
+  let image = null;
+
+
+if (req.file) {
+    // Skapa hash av filens innehåll
+    const hash = crypto.createHash("md5").update(req.file.buffer).digest("hex");
+    const ext = path.extname(req.file.originalname);
+    const filename = `${hash}${ext}`;
+    const filePath = path.join(__dirname, "public/images/products", filename);
+
+    // Spara bara om filen inte redan finns
+    if (!fs.existsSync(filePath)) {
+      fs.writeFileSync(filePath, req.file.buffer);
+    }
+
+    image = filename;
+  }
+
+  const slug = generateSlug(name);
+
+  try {
+    const stmt = db.prepare(`
+      INSERT INTO categories 
+      (name, image, slug) 
+      VALUES (?, ?, ?)
+    `);
+    stmt.run(
+      name,
+      image,
+      slug
+    );
+
+    res.status(201).json({ message: "Kategori tillagd!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Något gick fel vid sparandet" });
+  }
+});
 // app.delete("/api/admin/products/:sku", (req, res) => {
 //   const { sku } = req.params;
 
