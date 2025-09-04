@@ -1,26 +1,11 @@
-import {  useQuery } from "@tanstack/react-query";
+import { useCategories } from "@/api/categories";
+import type { Category } from "@/types";
 import { useState } from "react";
 
-type Category = {
-  id: number;
-  name: string;
-  slug: string;
-};
-
 export function NewProduct() {
-  // const queryClient = useQueryClient();
   const [selectedCategory, setSelectedCategory] = useState<number | "">("");
-
-  // TODO flytta logik till egen fil
-  //Hämta kategorier
-  const { data: categories = [], isLoading } = useQuery<Category[]>({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const res = await fetch("http://localhost:5000/api/categories");
-      if (!res.ok) throw new Error("Kunde inte hämta kategorier");
-      return res.json();
-    },
-  });
+  const { data, isLoading } = useCategories();
+  const categories = data;
 
   // Mutation för att skapa produkt
   // const createProduct = useMutation({
@@ -143,6 +128,7 @@ export function NewProduct() {
           id="name"
           name="name"
           placeholder="Ange namn"
+          maxLength={25}
           required
           className="border border-gray-500 rounded px-3 py-1 w-1/3 my-3"
         />
@@ -213,26 +199,7 @@ export function NewProduct() {
           required
           className="border border-gray-500 rounded px-3 py-1 w-1/5 my-3"
         />
-        {/* TODO: kategorier från databas. ev mer avancerad lösning som kryssrutor eller multi select */}
-        {/* <label className="font-bold" htmlFor="category">
-          Kategori
-        </label>{" "}
-        <select
-          name="category"
-          id="category"
-          className="border border-gray-500 rounded px-3 py-1 w-1/5 my-3"
-          required
-        >
-          {" "}
-          <option value="Kategori 1">Kategori 1</option>{" "}
-          <option value="Kategori 2">Kategori 2</option>{" "}
-          <option value="Kategori 3">Kategori 3</option>{" "}
-        </select>{" "}
-        <input
-          type="submit"
-          value="Lägg till"
-          className="border border-gray-500 rounded px-3 py-1 w-20 my-3"
-        /> */}
+        {/* TODO: ev mer avancerad lösning som kryssrutor eller multi select */}
         <label className="font-bold" htmlFor="category">
           Kategorier
         </label>
@@ -241,18 +208,11 @@ export function NewProduct() {
           name="category"
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(Number(e.target.value))}
-          // multiple
-          // value={selectedCategories.map(String)} // value måste vara string[]
-          // onChange={(e) =>
-          //   setSelectedCategories(
-          //     Array.from(e.target.selectedOptions, (opt) => Number(opt.value))
-          //   )
-          // }
           className="border border-gray-500 rounded px-2 py-1 w-1/5 my-3"
           required
         >
           <option value="">Välj kategori</option>
-          {categories.map((cat) => (
+          {categories.map((cat: Category) => (
             <option key={cat.id} value={cat.id}>
               {cat.name}
             </option>

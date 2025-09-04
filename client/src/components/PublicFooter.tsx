@@ -96,22 +96,22 @@ export function PublicFooter() {
           <li>
             <Link
                 to="/categories/$category"
-                params={{ category: "clothing" }}>Vinterjackor</Link>
+                params={{ category: "vinterjackor" }}>Vinterjackor</Link>
           </li>
           <li>
             <Link
                 to="/categories/$category"
-                params={{ category: "clothing" }}>Pufferjackor</Link>
+                params={{ category: "pufferjackor" }}>Pufferjackor</Link>
           </li>
           <li>
             <Link
                 to="/categories/$category"
-                params={{ category: "clothing" }}>Kappa</Link>
+                params={{ category: "kappor" }}>Kappa</Link>
           </li>
           <li>
             <Link
                 to="/categories/$category"
-                params={{ category: "clothing" }}>Trenchcoats</Link>
+                params={{ category: "trenchcoats" }}>Trenchcoats</Link>
           </li>
         </ul>
                 <ul className="py-5 flex flex-col gap-2">
