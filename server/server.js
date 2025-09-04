@@ -11,6 +11,7 @@ const crypto = require("crypto");
 
 
 const db = new Database("./db/persmode.db");
+db.pragma("foreign_keys = ON"); //för stöd av foreign key
 
 app.use(
   session({
@@ -443,6 +444,17 @@ if (req.file) {
 app.get("/api/categories", (req, res) => {
   const categories = db.prepare("SELECT * FROM categories").all();
   res.json(categories);
+});
+app.delete("/api/categories/:slug", (req, res) => {
+  const { slug } = req.params;
+
+  const info = db.prepare("DELETE FROM categories WHERE slug = ?").run(slug);
+
+  if (info.changes === 0) {
+    return res.status(404).json({ error: "Kategorin hittades inte" });
+  }
+
+  res.json({ success: true });
 });
 
 // app.delete("/api/admin/products/:sku", (req, res) => {

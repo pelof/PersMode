@@ -4,24 +4,7 @@ import { useProducts } from "../api/products";
 import { useCategories } from "@/api/categories";
 
 export function Category() {
-  //     // const { category } = useParams({ from: "/categories/$category" });
-  //         const { category } = useParams({ strict: false });
 
-  // //TODO kategorier från databasen
-  //     //TODO till types-fil
-  //     const categoryNames: Record<string, string> ={
-  //         clothing: "Kläder",
-  //         electronics: "Elektronik",
-  //         home: "Till hemmet",
-  //         mobile: "Mobiltelefoni",
-  //         vehicles: "Fordon",
-  //         shoes: "Skor",
-  //         accessories: "Accessoarer",
-  //     }
-  //     const displayName = categoryNames[category] ?? category;
-
-  //     const { data, isLoading } = useProducts({ category })
-  //     if (isLoading) return <p> Laddar... </p>
 const { category: categorySlug } = useParams({ strict: false });
 
 const { data: categories, isLoading: catsLoading } = useCategories();
