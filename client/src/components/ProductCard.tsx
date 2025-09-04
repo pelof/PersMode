@@ -12,7 +12,9 @@ export function ProductCard({ product, hideNewsBadge }: ProductCardProps) {
   const { data: favorites } = useFavorites();
   const toggleFavorite = useToggleFavorite();
 
-const isFavorite = favorites?.some(fav => fav.product_SKU === product.product_SKU);
+  const isFavorite = favorites?.some(
+    (fav) => fav.product_SKU === product.product_SKU
+  );
 
   const today = new Date();
   const publishedDate = new Date(product.product_published);
@@ -25,9 +27,9 @@ const isFavorite = favorites?.some(fav => fav.product_SKU === product.product_SK
       <Link to="/products/$slug" params={{ slug: product.product_slug }}>
         <div className="relative">
           <img
-            src={product.product_image}
+            src={`http://localhost:5000/images/products/${product.product_image}`}
             alt={product.product_name}
-            className="w-full"
+            className="w-full aspect-3/4"
           />
           {!hideNewsBadge && isNew && (
             <div className="absolute left-4 top-4 bg-black text-white px-2 py-1 rounded">
@@ -41,15 +43,15 @@ const isFavorite = favorites?.some(fav => fav.product_SKU === product.product_SK
         </div>
         <p className="text-sm text-gray-600">{product.product_brand}</p>
       </Link>
-          <button
-            type="button"
-            onClick={() => {
-              toggleFavorite.mutate(product.product_SKU);
-            }}
-            className="absolute right-3 bottom-17 text-4xl cursor-pointer hover:animate-[heartbeat_0.9s_ease-in-out_infinite_]"
-          >
-            {isFavorite ? <FaHeart /> : <FaRegHeart/>}
-          </button>
+      <button
+        type="button"
+        onClick={() => {
+          toggleFavorite.mutate(product.product_SKU);
+        }}
+        className="absolute right-3 bottom-17 text-4xl cursor-pointer hover:animate-[heartbeat_0.9s_ease-in-out_infinite_]"
+      >
+        {isFavorite ? <FaHeart /> : <FaRegHeart />}
+      </button>
     </article>
   );
 }

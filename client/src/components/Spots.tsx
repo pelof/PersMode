@@ -15,7 +15,7 @@ export default function Spots({ products }: SpotProps) {
           className="relative flex-1"
         >
           <img
-            src={product.product_image}
+            src={`http://localhost:5000/images/products/${product.product_image}`}
             alt={product.product_name}
             className="aspect-3/2 object-cover w-full"
           />

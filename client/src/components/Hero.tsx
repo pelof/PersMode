@@ -11,7 +11,7 @@ export function Hero({product}: HeroProps) {
     <section className="border-1 flex items-center justify-center flex-col lg:flex-row-reverse lg:items-start">
       <Link to="/products/$slug" params={{ slug: product.product_slug }} className="flex-2 w-full p-5">
         <img
-          src={product.product_image}
+          src={`http://localhost:5000/images/products/${product.product_image}`}
           alt={product.product_name}
           className="aspect-3/2 object-cover w-full"
         />
