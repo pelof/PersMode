@@ -8,6 +8,8 @@ const path = require("path");
 // för att interagera med filsystemet
 const fs = require("fs");
 const crypto = require("crypto");
+const bcrypt = require("bcrypt");
+
 
 
 const db = new Database("./db/persmode.db");
@@ -35,38 +37,6 @@ app.use(
   })
 );
 
-
-// Multer storage med hash-baserat filnamn
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, path.join(__dirname, "public/images/products"));
-//   },
-//   filename: function (req, file, cb) {
-//     // Läs hela filen i minne
-//     const fileBuffer = file.buffer || null;
-
-//     if (fileBuffer) {
-//       // Om filen redan är buffrad (multer kan ibland ge detta direkt)
-//       const hash = crypto.createHash("md5").update(fileBuffer).digest("hex");
-//       const ext = path.extname(file.originalname);
-//       cb(null, `${hash}${ext}`);
-//     } else {
-//       // Om bufferten inte finns: skapa hash av originalnamn + size som fallback
-//       const hash = crypto
-//         .createHash("md5")
-//         .update(file.originalname + Date.now())
-//         .digest("hex");
-//       const ext = path.extname(file.originalname);
-//       cb(null, `${hash}${ext}`);
-//     }
-//   },
-// });
-
-// // Viktigt: använd `storage` + `limits` så multer faktiskt sparar filen
-// const upload = multer({
-//   storage,
-//   limits: { fileSize: 5 * 1024 * 1024 }, // max 5 MB
-// });
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
@@ -155,42 +125,6 @@ app.get("/api/products/:slug", (req, res) => {
 });
 
 // Cart
-// app.get("/api/cart", (req, res) => {
-//     console.log("Session:", req.session);
-//   res.json(req.session.cart || []);
-// })
-
-// app.post("/api/cart/add", (req, res) => {
-//   const { productId, quantity = 1 } = req.body;
-//   if (!req.session.cart) req.session.cart = []
-
-//   const existing = req.session.cart.find(item => item.productId === productId);
-//   if (existing) {
-//     existing.quantity += quantity;
-//   } else {
-//     req.session.cart.push({ productId, quantity });
-//   }
-
-//   res.json({ cart: req.session.cart });
-//   console.log({cart: req.session.cart})
-// })
-
-// app.post("/api/cart/remove", (req, res) => {
-//   const { productId } = req.body;
-
-//   if (!req.session.cart) req.session.cart = [];
-
-//   req.session.cart = req.session.cart.filter(item => item.productId !== productId);
-
-//   res.json({ cart: req.session.cart });
-
-// });
-
-// app.post("/api/cart/clear", (req, res) => {
-//   req.session.cart = [];
-//   res.json({ cart: [] });
-// });
-
 app.get("/api/cart", (req, res) => {
   if (!req.session.cart) req.session.cart = [];
 
@@ -289,68 +223,6 @@ app.get("/api/admin/products", (req, res) => {
   res.json(products);
 });
 
-// för lägga till en produkt
-// app.post("/api/products", upload.single("image"), (req, res) => {
-//   const {
-//     product_name,
-//     product_description,
-//     product_image,
-//     product_brand,
-//     product_SKU,
-//     product_price,
-//     product_published,
-//     category_ids,
-//   } = req.body;
-
-//   if (
-//     !product_name ||
-//     !product_description ||
-//     !product_image ||
-//     !product_brand ||
-//     !product_SKU ||
-//     !product_price ||
-//     !product_published ||
-//     !Array.isArray(category_ids)
-//   ) {
-//     return res.status(400).json({ error: "Alla fält måste vara ifyllda" });
-//   }
-
-
-
-//   try {
-//     const slug = generateSlug(product_name);
-
-//     const stmt = db.prepare(`
-//       INSERT INTO products (product_name, product_description, product_image, product_brand, product_SKU, product_price, product_published, product_slug) 
-//       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-//     `);
-
-
-//     stmt.run(
-//       product_name,
-//       product_description,
-//       product_image,
-//       product_brand,
-//       product_SKU,
-//       product_price,
-//       product_published,
-//       slug
-//     );
-
-//         // Koppla kategorier
-//     const insertCat = db.prepare(
-//       "INSERT INTO product_categories (product_SKU, category_id) VALUES (?, ?)"
-//     );
-//     for (const catId of category_ids) {
-//       insertCat.run(product_SKU, catId);
-//     }
-
-//     res.status(201).json({ message: "Produkt tillagd!" });
-//   } catch (error) {
-//     console.error("Fel vid tillägg av produkt:", error);
-//     res.status(500).json({ error: "Något gick fel vid sparandet" });
-//   }
-// });
 
 app.post("/api/products", upload.single("image"), (req, res) => {
   const {
@@ -375,22 +247,8 @@ app.post("/api/products", upload.single("image"), (req, res) => {
     return res.status(400).json({ error: "Alla fält måste vara ifyllda" });
   }
 
-  // const product_image = req.file ? `/public/images/products/${req.file.filename}` : null;
-  // const product_image = req.file ? req.file.filename : null;
-
   let product_image = null;
 
-  // if (req.file) {
-  //   const filePath = path.join(__dirname, "public/images/products", req.file.filename);
-
-  //   if (fs.existsSync(filePath)) {
-  //     // Filen finns redan, använd samma namn
-  //     product_image = req.file.filename;
-  //   } else {
-  //     // Detta borde inte hända, men fallback
-  //     product_image = req.file.filename;
-  //   }
-  // }
 
 if (req.file) {
     // Skapa hash av filens innehåll
@@ -504,40 +362,7 @@ if (req.file) {
     res.status(500).json({ error: "Något gick fel vid sparandet" });
   }
 });
-// app.delete("/api/admin/products/:sku", (req, res) => {
-//   const { sku } = req.params;
 
-//   // Hämta filnamn för bild
-//   try {
-//     const product = db.prepare("SELECT product_image FROM products WHERE product_SKU = ?").get(sku);
-
-//     if (!product) {
-//       return res.status(404).json({ error: "Produkten hittades inte" });
-//     }
-//     // Ta bort produkt från databas
-//     const stmt = db.prepare("DELETE FROM products WHERE product_SKU = ?");
-//     const info = stmt.run(sku);
-  
-//     if (info.changes === 0) {
-//       return res.status(404).json({ error: "Produkten hittades inte" });
-//     }
-//     // Ta bort filen från disk om den finns
-//     if (product.product_image) {
-//       const filePath = path.join(__dirname, "public/images/products", product.product_image);
-      
-//       fs.unlink(filePath, (err) => {
-//         if (err) {
-//           console.error("Kunde inte ta bort bildfil:", err)
-//         }
-//       });
-
-//     }
-//     res.json({ success: true });
-//   } catch (err) {
-//     console.error("Fel vid borttagning av produkt:", err);
-//     res.status(500).json({ error: "Ett fel uppstod" });
-//   }
-// });
 app.delete("/api/admin/products/:sku", (req, res) => {
   const { sku } = req.params;
 
@@ -564,17 +389,6 @@ app.delete("/api/admin/products/:sku", (req, res) => {
         .prepare("SELECT COUNT(*) as count FROM products WHERE product_image = ?")
         .get(product.product_image);
 
-      // if (otherUsers.count === 0) {
-      //   const filePath = path.join(
-      //     __dirname,
-      //     "public/images/products",
-      //     product.product_image
-      //   );
-
-      //   fs.unlink(filePath, (err) => {
-      //     if (err) console.error("Kunde inte ta bort bildfil:", err);
-      //   });
-      // }
     if (otherUsers.count === 0) {
         const filePath = path.join(__dirname, "public/images/products", product.product_image);
         if (fs.existsSync(filePath)) {
@@ -589,6 +403,54 @@ app.delete("/api/admin/products/:sku", (req, res) => {
     res.status(500).json({ error: "Ett fel uppstod" });
   }
 });
+
+// Registrera (för test)
+app.post("/api/register", async (req, res) => {
+  const {email, password, role = "user"} = req.body;
+
+  const hash = await bcrypt.hash(password, 10); // password = lösenordet, 10 = antalet rundor det krypteras (salt)
+  try {
+    db.prepare("INSERT INTO users (email, password, role) VALUES (?, ?, ?)").run(email, hash, role);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(400).json({ error: "User already exists" });
+  }
+});
+
+// Login
+app.post("/api/login", async (req, res) => {
+  const {email, password } = req.body;
+  const user = db.prepare("SELECT * FROM users where email = ?").get(email);
+
+  if (!user) return res.status(401).json({ error: "Invalid credentials"});
+
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) return res.status(401).json({ error: "Invalid credentials" });
+
+  req.session.user = { id: user.id, email: user.email, role: user.role };
+  res.json({ success: true, user: req.session.user });
+});
+
+// Logout
+
+app.post("/api/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.json({ success: true });
+  });
+});
+
+// Middleware för skydd
+function requireLogin(req, res, next) {
+  if (!req.session.user) return res.status(401).json({ error: "Inte inloggad"})
+    next();
+  }
+
+function requireAdmin(req, res) {
+  if (!req.session.user || !req.session.user.role !== "admin") {
+    return res.status(403).json({ error: "Endast för admins"})
+  }
+  next();
+}
 
 
 const PORT = 5000;
