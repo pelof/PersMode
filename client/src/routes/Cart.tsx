@@ -14,3 +14,5 @@ export function Cart() {
     </>
   );
 }
+
+//TODO spara cart i db för användare

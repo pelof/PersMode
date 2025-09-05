@@ -29,6 +29,4 @@ const queryClient = useQueryClient();
 //   return { user, isLoading, logout: logoutMutation.mutate };
 return { user, isLoading, logout: () => logoutMutation.mutate() };
 
-
-
 }

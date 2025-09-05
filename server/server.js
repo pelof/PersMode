@@ -10,31 +10,35 @@ const fs = require("fs");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 
-
-
 const db = new Database("./db/persmode.db");
 db.pragma("foreign_keys = ON"); //för stöd av foreign key
-
-app.use(
-  session({
-    secret: "hemlig hemlighet",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 }, // 1 dag
-  })
-);
-
-app.use(express.json());
-
-app.use("/images", express.static(path.join(__dirname, "public/images")));
-app.use("/images/products", express.static(path.join(__dirname, "public/images/products")));
-
 
 app.use(
   cors({
     origin: "http://localhost:5173",
     credentials: true,
   })
+);
+
+app.use(express.json());
+
+app.use(
+  session({
+    secret: "hemlig hemlighet",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false,
+      maxAge: 1000 * 60 * 60 * 24, // 1 dag
+      sameSite: "lax",
+      httpOnly: true,
+    },
+  })
+);
+app.use("/images", express.static(path.join(__dirname, "public/images")));
+app.use(
+  "/images/products",
+  express.static(path.join(__dirname, "public/images/products"))
 );
 
 
@@ -58,7 +62,7 @@ app.get("/api/products", (req, res) => {
   const params = [];
   // 1=1 gör det enklare att kedja på villkor utan att tänka på första AND
   // let query = "SELECT * FROM products WHERE 1=1";
-    let query = `
+  let query = `
     SELECT DISTINCT p.* 
     FROM products p
     LEFT JOIN product_categories pc ON p.product_SKU = pc.product_SKU
@@ -187,34 +191,67 @@ app.post("/api/cart/clear", (req, res) => {
   res.json([]);
 });
 
+// Hämta favoriter (om inloggad: från db, annars från session)
+//TODO favoriter från session sparas inte i db vid inloggning. står dock inget om det i wireframe
 app.get("/api/favorites", (req, res) => {
-  if (!req.session.favorites) req.session.favorites = [];
-
-  const placeholders = req.session.favorites.map(() => "?").join(",");
-  let products = [];
-
-  if (placeholders.length > 0) {
-    products = db
-      .prepare(`SELECT * FROM products WHERE product_SKU IN (${placeholders})`)
-      .all(...req.session.favorites);
+  // från db
+  if (req.session.user) {
+    const favorites = db
+      .prepare(
+        `
+      SELECT p.* FROM favorites f
+      JOIN products p ON p.product_SKU = f.product_SKU
+      WHERE f.user_id = ?
+      `
+      )
+      .all(req.session.user.id);
+    return res.json(favorites);
   }
 
+  // Gäst, session
+  if (!req.session.favorites) req.session.favorites = [];
+  if (req.session.favorites.length === 0) return res.json([]);
+  const placeholders = req.session.favorites.map(() => "?").join(",");
+  const products = db
+    .prepare(`SELECT * FROM products WHERE product_SKU IN (${placeholders})`)
+    .all(...req.session.favorites);
   res.json(products);
 });
 
+// toggle favorite
 app.post("/api/favorites/toggle", (req, res) => {
   const { product_SKU } = req.body;
-  if (!req.session.favorites) req.session.favorites = [];
 
+  //om inloggad
+  if (req.session.user) {
+    const fav = db
+      .prepare("SELECT * FROM favorites WHERE user_id = ? AND product_SKU = ?")
+      .get(req.session.user.id, product_SKU);
+
+    if (fav) {
+      db.prepare(
+        "DELETE FROM favorites WHERE user_id = ? AND product_SKU = ?"
+      ).run(req.session.user.id, product_SKU);
+      return res.json({ isFavorite: false });
+    } else {
+      db.prepare(
+        "INSERT INTO favorites (user_id, product_SKU) VALUES (?, ?)"
+      ).run(req.session.user.id, product_SKU);
+      return res.json({ isFavorite: true });
+    }
+  }
+
+  // Gäst, session
+  if (!req.session.favorites) req.session.favorites = [];
   const index = req.session.favorites.indexOf(product_SKU);
   if (index >= 0) {
     // Om produkten redan finns, sätt isFavorite till false
     req.session.favorites.splice(index, 1);
-    return res.json({ isFavorite: false, favorites: req.session.favorites });
+    return res.json({ isFavorite: false });
   } else {
     // Om produkten inte finns, sätt isFavorite till true
     req.session.favorites.push(product_SKU);
-    return res.json({ isFavorite: true, favorites: req.session.favorites });
+    return res.json({ isFavorite: true });
   }
 });
 
@@ -222,7 +259,6 @@ app.get("/api/admin/products", (req, res) => {
   const products = db.prepare("SELECT * FROM products").all();
   res.json(products);
 });
-
 
 app.post("/api/products", upload.single("image"), (req, res) => {
   const {
@@ -249,8 +285,7 @@ app.post("/api/products", upload.single("image"), (req, res) => {
 
   let product_image = null;
 
-
-if (req.file) {
+  if (req.file) {
     // Skapa hash av filens innehåll
     const hash = crypto.createHash("md5").update(req.file.buffer).digest("hex");
     const ext = path.extname(req.file.originalname);
@@ -317,17 +352,14 @@ app.delete("/api/categories/:slug", (req, res) => {
 
 app.post("/api/categories", upload.single("image"), (req, res) => {
   const { name } = req.body;
-  
-  if (
-    !name
-  ) {
+
+  if (!name) {
     return res.status(400).json({ error: "Alla fält måste vara ifyllda" });
   }
 
   let image = null;
 
-
-if (req.file) {
+  if (req.file) {
     // Skapa hash av filens innehåll
     const hash = crypto.createHash("md5").update(req.file.buffer).digest("hex");
     const ext = path.extname(req.file.originalname);
@@ -350,11 +382,7 @@ if (req.file) {
       (name, image, slug) 
       VALUES (?, ?, ?)
     `);
-    stmt.run(
-      name,
-      image,
-      slug
-    );
+    stmt.run(name, image, slug);
 
     res.status(201).json({ message: "Kategori tillagd!" });
   } catch (error) {
@@ -386,11 +414,17 @@ app.delete("/api/admin/products/:sku", (req, res) => {
     // Kolla om någon annan använder samma bild innan vi raderar den
     if (product.product_image) {
       const otherUsers = db
-        .prepare("SELECT COUNT(*) as count FROM products WHERE product_image = ?")
+        .prepare(
+          "SELECT COUNT(*) as count FROM products WHERE product_image = ?"
+        )
         .get(product.product_image);
 
-    if (otherUsers.count === 0) {
-        const filePath = path.join(__dirname, "public/images/products", product.product_image);
+      if (otherUsers.count === 0) {
+        const filePath = path.join(
+          __dirname,
+          "public/images/products",
+          product.product_image
+        );
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
         }
@@ -406,11 +440,13 @@ app.delete("/api/admin/products/:sku", (req, res) => {
 
 // Registrera (för test)
 app.post("/api/register", async (req, res) => {
-  const {email, password, role = "user"} = req.body;
+  const { email, password, role = "user" } = req.body;
 
   const hash = await bcrypt.hash(password, 10); // password = lösenordet, 10 = antalet rundor det krypteras (salt)
   try {
-    db.prepare("INSERT INTO users (email, password, role) VALUES (?, ?, ?)").run(email, hash, role);
+    db.prepare(
+      "INSERT INTO users (email, password, role) VALUES (?, ?, ?)"
+    ).run(email, hash, role);
     res.json({ success: true });
   } catch (err) {
     res.status(400).json({ error: "User already exists" });
@@ -419,10 +455,10 @@ app.post("/api/register", async (req, res) => {
 
 // Login
 app.post("/api/login", async (req, res) => {
-  const {email, password } = req.body;
+  const { email, password } = req.body;
   const user = db.prepare("SELECT * FROM users where email = ?").get(email);
 
-  if (!user) return res.status(401).json({ error: "Invalid credentials"});
+  if (!user) return res.status(401).json({ error: "Invalid credentials" });
 
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) return res.status(401).json({ error: "Invalid credentials" });
@@ -441,24 +477,24 @@ app.post("/api/logout", (req, res) => {
 
 app.get("/api/me", (req, res) => {
   if (!req.session.user) {
-    return res.status(401).json({ error: "Inte inloggad" });
+    return res.json(null);
   }
   res.json(req.session.user);
 });
 
 // Middleware för skydd
 function requireLogin(req, res, next) {
-  if (!req.session.user) return res.status(401).json({ error: "Inte inloggad"})
-    next();
-  }
-
-function requireAdmin(req, res, next) {
-  if (!req.session.user || req.session.user.role !== "admin") {
-    return res.status(403).json({ error: "Endast för admins"})
-  }
+  if (!req.session.user)
+    return res.status(401).json({ error: "Inte inloggad" });
   next();
 }
 
+function requireAdmin(req, res, next) {
+  if (!req.session.user || req.session.user.role !== "admin") {
+    return res.status(403).json({ error: "Endast för admins" });
+  }
+  next();
+}
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server kör på http://localhost:${PORT}`));
