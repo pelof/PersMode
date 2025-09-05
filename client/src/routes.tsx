@@ -3,6 +3,7 @@ import {
   createRoute,
   createRouter,
   Outlet,
+  redirect,
 } from "@tanstack/react-router";
 import { Index } from "./routes/Index";
 import { PublicHeader } from "./components/PublicHeader";
@@ -55,13 +56,28 @@ const rootRouteAdmin = createRoute({
       <AdminHeader />
       <div className="flex flex-1">
         <AdminSidebar/>
-
         <main className="flex-1 m-10">
           <Outlet />
         </main>
       </div>
     </div>
   ),
+beforeLoad: async () => {
+    const res = await fetch("http://localhost:5000/api/me", {
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      throw redirect({ to: "/login" }); // inte inloggad
+    }
+
+    const user = await res.json();
+    if (user.role !== "admin") {
+      throw redirect({ to: "/" }); // inloggad men ej admin
+    }
+
+    return { user }; // tillgängligt som routeContext
+  },
 });
 
 
@@ -101,11 +117,30 @@ const loginRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
   path: "/login",
   component: Login,
+  beforeLoad: async () => {
+    const res = await fetch("http://localhost:5000/api/me", {
+      credentials: "include",
+    });
+
+    // om användaren redan är inloggad, skicka hem
+    if (res.ok) {
+      throw redirect({ to: "/" });
+    }
+  },
 });
 const registerRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
   path: "/register",
   component: Register,
+  beforeLoad: async () => {
+    const res = await fetch("http://localhost:5000/api/me", {
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      throw redirect({ to: "/" });
+    }
+  },
 });
 const categoryRoute = createRoute({
   getParentRoute: () => rootRoutePublic,
