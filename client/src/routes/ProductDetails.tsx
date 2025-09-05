@@ -49,7 +49,6 @@ export function ProductDetails() {
             alt={product.product_name}
             className="w-full min-w-md aspect-3/4"
           />
-          {/* TODO fixa funktionellt */}
           <button
                       type="button"
                       onClick={() => {

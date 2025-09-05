@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 // hämtar info om inloggad
 export function useAuth() {
 const queryClient = useQueryClient();
+const navigate = useNavigate();
 
   const { data: user, isLoading } = useQuery({
     queryKey: ["auth"],
@@ -23,6 +25,7 @@ const queryClient = useQueryClient();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth"] });
+      navigate({ to: "/" })
     },
   });
 
