@@ -34,6 +34,7 @@ export function PublicHeader() {
             {/* <Link to="/login" className="text-4xl md:text-3xl"><IoLogIn /></Link> */}
              {user ? (
           <button
+          //TODO ladda om sidan när du loggar ut
             onClick={() => logout()}
             className="text-4xl md:text-3xl cursor-pointer"
           >
