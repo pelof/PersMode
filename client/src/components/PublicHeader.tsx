@@ -1,10 +1,12 @@
+import { useAuth } from "@/auth/useAuth";
 import { Link } from "@tanstack/react-router";
 import { FaHeart, FaSearch } from "react-icons/fa";
 import { FaBasketShopping } from "react-icons/fa6";
-import { IoLogIn } from "react-icons/io5";
+import { IoLogIn, IoLogOut } from "react-icons/io5";
 
 
 export function PublicHeader() {
+  const { user, logout} = useAuth();
   return (
     <header className="m-2">
       <div className="header-top flex flex-col w-full md:flex-row">
@@ -29,11 +31,25 @@ export function PublicHeader() {
           <div className="header-icons flex flex-row gap-2 ml-3 md:gap-3">
             <Link to="/favorites" className="text-3xl md:text-2xl"><FaHeart /></Link>
             <Link to="/cart" className="text-3xl md:text-2xl"><FaBasketShopping /></Link>
-            <Link to="/login" className="text-4xl md:text-3xl"><IoLogIn /></Link>
+            {/* <Link to="/login" className="text-4xl md:text-3xl"><IoLogIn /></Link> */}
+             {user ? (
+          <button
+            onClick={() => logout()}
+            className="text-4xl md:text-3xl cursor-pointer"
+          >
+            <IoLogOut/>
+          </button>
+        ) : (
+          <Link to="/login" className="text-4xl md:text-3xl">
+            <IoLogIn />
+          </Link>
+        )}
           </div>
         </div>
       </div>
-
+        {user ? (
+          <p className="py-3 font-bold">Användare: {user.email }</p>
+        ) : ("")}
       <nav>
         <ul className="nav-links text-xl md:text-lg md:flex md:gap-4 md:my-4">
             <li>

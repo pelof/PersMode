@@ -439,14 +439,21 @@ app.post("/api/logout", (req, res) => {
   });
 });
 
+app.get("/api/me", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: "Inte inloggad" });
+  }
+  res.json(req.session.user);
+});
+
 // Middleware för skydd
 function requireLogin(req, res, next) {
   if (!req.session.user) return res.status(401).json({ error: "Inte inloggad"})
     next();
   }
 
-function requireAdmin(req, res) {
-  if (!req.session.user || !req.session.user.role !== "admin") {
+function requireAdmin(req, res, next) {
+  if (!req.session.user || req.session.user.role !== "admin") {
     return res.status(403).json({ error: "Endast för admins"})
   }
   next();
