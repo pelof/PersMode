@@ -121,9 +121,9 @@ const loginRoute = createRoute({
     const res = await fetch("http://localhost:5000/api/me", {
       credentials: "include",
     });
+      const user = await res.json();
 
-    // om användaren redan är inloggad, skicka hem
-    if (res.ok) {
+    if (user) {
       throw redirect({ to: "/" });
     }
   },
@@ -136,8 +136,9 @@ const registerRoute = createRoute({
     const res = await fetch("http://localhost:5000/api/me", {
       credentials: "include",
     });
+      const user = await res.json();
 
-    if (res.ok) {
+    if (user) {
       throw redirect({ to: "/" });
     }
   },
