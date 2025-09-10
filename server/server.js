@@ -95,9 +95,6 @@ app.get("/api/products", (req, res) => {
   if (random === "true") {
     query += " ORDER BY RANDOM()";
   }
-  // else {
-  //   query += " ORDER BY product_published DESC"; //fallback-sortering DESC = descending, alltså nyaste först
-  // }
 
   if (limit) {
     query += " LIMIT ?";
@@ -137,21 +134,27 @@ function getOrCreateCart(userId) {
   return cart;
 }
 
-// Cart
-
-app.get("/api/cart", (req, res) => {
-  if (req.session.user) {
-    const cart = getOrCreateCart(req.session.user.id);
-    const items = db
-      .prepare(
-        `
+function getCartItems(cartId) {
+  let cartItems = db
+    .prepare(
+      `
       SELECT ci.product_SKU, ci.quantity, p.product_name, p.product_price, p.product_slug
       FROM cart_items ci
       JOIN products p ON p.product_SKU = ci.product_SKU
       WHERE ci.cart_id = ?
     `
-      )
-      .all(cart.id);
+    )
+    .all(cartId);
+
+  return cartItems;
+}
+
+// Cart
+
+app.get("/api/cart", (req, res) => {
+  if (req.session.user) {
+    const cart = getOrCreateCart(req.session.user.id);
+    const items = getCartItems(cart.id);
     return res.json(items);
   }
 
@@ -173,6 +176,7 @@ app.post("/api/cart/add", (req, res) => {
 
   if (req.session.user) {
     const cart = getOrCreateCart(req.session.user.id);
+    //Om produkten redan finns i cart hämtas den från cart_items och sparas som variabel
     const existing = db
       .prepare("SELECT * FROM cart_items WHERE cart_id = ? AND product_SKU = ?")
       .get(cart.id, product_SKU);
@@ -186,16 +190,9 @@ app.post("/api/cart/add", (req, res) => {
         "INSERT INTO cart_items (cart_id, product_SKU, quantity) VALUES (?, ?, ?)"
       ).run(cart.id, product_SKU, quantity);
     }
-    const items = db
-      .prepare(
-        `
-      SELECT ci.product_SKU, ci.quantity, p.product_name, p.product_price, p.product_slug
-      FROM cart_items ci
-      JOIN products p ON p.product_SKU = ci.product_SKU
-      WHERE ci.cart_id = ?
-    `
-      )
-      .all(cart.id);
+
+    const items = getCartItems(cart.id);
+
     return res.json(items);
   }
 
@@ -210,16 +207,6 @@ app.post("/api/cart/add", (req, res) => {
   res.json(req.session.cart);
 });
 
-// app.post("/api/cart/remove", (req, res) => {
-//   const { product_SKU } = req.body;
-//   if (!req.session.cart) req.session.cart = [];
-
-//   req.session.cart = req.session.cart.filter(
-//     (item) => item.product_SKU !== product_SKU
-//   );
-//   res.json(req.session.cart);
-// });
-
 // REMOVE from cart
 app.post("/api/cart/remove", (req, res) => {
   const { product_SKU } = req.body;
@@ -230,16 +217,8 @@ app.post("/api/cart/remove", (req, res) => {
       "DELETE FROM cart_items WHERE cart_id = ? AND product_SKU = ?"
     ).run(cart.id, product_SKU);
 
-    const items = db
-      .prepare(
-        `
-      SELECT ci.product_SKU, ci.quantity, p.product_name, p.product_price, p.product_slug
-      FROM cart_items ci
-      JOIN products p ON p.product_SKU = ci.product_SKU
-      WHERE ci.cart_id = ?
-    `
-      )
-      .all(cart.id);
+    const items = getCartItems(cart.id);
+
     return res.json(items);
   }
 
@@ -261,16 +240,8 @@ app.post("/api/cart/update", (req, res) => {
       "UPDATE cart_items SET quantity = ? WHERE cart_id = ? AND product_SKU = ?"
     ).run(quantity, cart.id, product_SKU);
 
-    const items = db
-      .prepare(
-        `
-      SELECT ci.product_SKU, ci.quantity, p.product_name, p.product_price, p.product_slug
-      FROM cart_items ci
-      JOIN products p ON p.product_SKU = ci.product_SKU
-      WHERE ci.cart_id = ?
-    `
-      )
-      .all(cart.id);
+    const items = getCartItems(cart.id);
+
     return res.json(items);
   }
 
@@ -282,16 +253,16 @@ app.post("/api/cart/update", (req, res) => {
 });
 
 // CLEAR cart används inte
-app.post("/api/cart/clear", (req, res) => {
-  if (req.session.user) {
-    const cart = getOrCreateCart(req.session.user.id);
-    db.prepare("DELETE FROM cart_items WHERE cart_id = ?").run(cart.id);
-    return res.json([]);
-  }
+// app.post("/api/cart/clear", (req, res) => {
+//   if (req.session.user) {
+//     const cart = getOrCreateCart(req.session.user.id);
+//     db.prepare("DELETE FROM cart_items WHERE cart_id = ?").run(cart.id);
+//     return res.json([]);
+//   }
 
-  req.session.cart = [];
-  res.json([]);
-});
+//   req.session.cart = [];
+//   res.json([]);
+// });
 
 // Hämta favoriter (om inloggad: från db, annars från session)
 //TODO favoriter från session sparas inte i db vid inloggning. står dock inget om det i wireframe

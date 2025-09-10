@@ -29,6 +29,7 @@ export function PublicHeader() {
             />
           </form>
           <div className="header-icons flex flex-row gap-2 ml-3 md:gap-3">
+            {/* TODO: bonus: ikon och länk till adminsidorna om användaren är admin */}
             <Link to="/favorites" className="text-3xl md:text-2xl"><FaHeart /></Link>
             <Link to="/cart" className="text-3xl md:text-2xl"><FaBasketShopping /></Link>
             {/* <Link to="/login" className="text-4xl md:text-3xl"><IoLogIn /></Link> */}
