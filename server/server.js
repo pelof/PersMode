@@ -59,10 +59,10 @@ app.locals.upload = upload; // gör multer åtkomlig för routes
 app.use("/api/products", productsRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/favorites", favoritesRoutes);
-// app.use("/api/categories", categoriesRoutes);
-// app.use("/api", authRoutes); // login, logout, register, me
+app.use("/api/categories", categoriesRoutes);
+app.use("/api", authRoutes); // login, logout, register, me
 // app.use("/api/orders", ordersRoutes);
-// app.use("/api/admin", adminRoutes);
+app.use("/api/admin", adminRoutes);
 
 
 const PORT = 5000;

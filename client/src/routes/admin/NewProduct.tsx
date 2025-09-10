@@ -45,7 +45,7 @@ export function NewProduct() {
       formData.append("image", imageInput.files[0]);
     }
 
-    fetch("http://localhost:5000/api/products", {
+    fetch("http://localhost:5000/api/admin/products", {
       method: "POST",
       body: formData, // OBS! inte JSON.stringify
     })

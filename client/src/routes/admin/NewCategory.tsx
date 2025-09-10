@@ -1,4 +1,5 @@
 export function NewCategory() {
+  //TODO både denna och samma i newProduct kan flyttas till egen fil.
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData();
@@ -15,7 +16,7 @@ export function NewCategory() {
       formData.append("image", imageInput.files[0]);
     }
 
-    fetch("http://localhost:5000/api/categories", {
+    fetch("http://localhost:5000/api/admin/categories", {
       method: "POST",
       body: formData, // OBS! inte JSON.stringify
     })
@@ -58,6 +59,7 @@ export function NewCategory() {
             id="image"
             name="image"
             className="hidden"
+            required
           />
         <button
           type="submit"
