@@ -41,7 +41,6 @@ app.use(
   express.static(path.join(__dirname, "public/images/products"))
 );
 
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
 
@@ -139,47 +138,20 @@ function getOrCreateCart(userId) {
 }
 
 // Cart
-// app.get("/api/cart", (req, res) => {
-//   if (req.session.user) {
-//     const cart = db.prepare(`
-//       SELECT ci.product_SKU, ci.quantity, p.product_name, p.product_price, p.product_slug
-//       FROM cart_items ci
-//       JOIN carts c ON c.id = ci.cart_id
-//       JOIN products p ON p.product_SKU = ci.product_SKU
-//       WHERE c.user_id = ?
-//       `).all(req.session.user.id);
-//       return res.json(cart);
-//   }
-
-//     // Gäst -> session
-
-//   if (!req.session.cart) req.session.cart = [];
-
-//   const cartWithProducts = req.session.cart.map((item) => {
-//     const product = db
-//       .prepare(
-//         "SELECT product_name, product_slug, product_price FROM products WHERE product_SKU = ?"
-//       )
-//       .get(item.product_SKU);
-
-//     return {
-//       ...item,
-//       ...product, //Lägger på namn, pris, slug osv
-//     };
-//   });
-
-//   res.json(cartWithProducts);
-// });
 
 app.get("/api/cart", (req, res) => {
   if (req.session.user) {
     const cart = getOrCreateCart(req.session.user.id);
-    const items = db.prepare(`
+    const items = db
+      .prepare(
+        `
       SELECT ci.product_SKU, ci.quantity, p.product_name, p.product_price, p.product_slug
       FROM cart_items ci
       JOIN products p ON p.product_SKU = ci.product_SKU
       WHERE ci.cart_id = ?
-    `).all(cart.id);
+    `
+      )
+      .all(cart.id);
     return res.json(items);
   }
 
@@ -187,59 +159,14 @@ app.get("/api/cart", (req, res) => {
   if (!req.session.cart) req.session.cart = [];
   const cartWithProducts = req.session.cart.map((item) => {
     const product = db
-      .prepare("SELECT product_name, product_slug, product_price FROM products WHERE product_SKU = ?")
+      .prepare(
+        "SELECT product_name, product_slug, product_price FROM products WHERE product_SKU = ?"
+      )
       .get(item.product_SKU);
     return { ...item, ...product };
   });
   res.json(cartWithProducts);
 });
-
-// app.post("/api/cart/add", (req, res) => {
-//   const { product_SKU, quantity = 1 } = req.body;
-
-//   if (req.session.user) {
-//     // Inloggad -> spara i DB
-//     const userId = req.session.user.id;
-
-//     // Se till att användaren har en cart
-//     let cart = db.prepare("SELECT * FROM carts WHERE user_id = ?").get(userId);
-//     if (!cart) {
-//       db.prepare("INSERT INTO carts (user_id) VALUES (?)").run(userId);
-//       cart = db.prepare("SELECT * FROM carts WHERE user_id = ?").get(userId);
-//     }
-
-//     const existing = db
-//       .prepare("SELECT * FROM cart_items WHERE cart_id = ? AND product_SKU = ?")
-//       .get(cart.id, product_SKU);
-
-//     if (existing) {
-//       db.prepare("UPDATE cart_items SET quantity = quantity + ? WHERE id = ?")
-//         .run(quantity, existing.id);
-//     } else {
-//       db.prepare("INSERT INTO cart_items (cart_id, product_SKU, quantity) VALUES (?, ?, ?)")
-//         .run(cart.id, product_SKU, quantity);
-//     }
-
-//     const items = db.prepare(`
-//       SELECT ci.product_SKU, ci.quantity, p.product_name, p.product_price
-//       FROM cart_items ci
-//       JOIN products p ON p.product_SKU = ci.product_SKU
-//       WHERE ci.cart_id = ?
-//     `).all(cart.id);
-
-//     return res.json(items);
-//   }
-
-//   // Gäst
-//   if (!req.session.cart) req.session.cart = [];
-//   const existing = req.session.cart.find((item) => item.product_SKU === product_SKU);
-//   if (existing) {
-//     existing.quantity += quantity;
-//   } else {
-//     req.session.cart.push({ product_SKU, quantity });
-//   }
-//   res.json(req.session.cart);
-// });
 
 app.post("/api/cart/add", (req, res) => {
   const { product_SKU, quantity = 1 } = req.body;
@@ -251,18 +178,24 @@ app.post("/api/cart/add", (req, res) => {
       .get(cart.id, product_SKU);
 
     if (existing) {
-      db.prepare("UPDATE cart_items SET quantity = quantity + ? WHERE id = ?")
-        .run(quantity, existing.id);
+      db.prepare(
+        "UPDATE cart_items SET quantity = quantity + ? WHERE id = ?"
+      ).run(quantity, existing.id);
     } else {
-      db.prepare("INSERT INTO cart_items (cart_id, product_SKU, quantity) VALUES (?, ?, ?)")
-        .run(cart.id, product_SKU, quantity);
+      db.prepare(
+        "INSERT INTO cart_items (cart_id, product_SKU, quantity) VALUES (?, ?, ?)"
+      ).run(cart.id, product_SKU, quantity);
     }
-    const items = db.prepare(`
+    const items = db
+      .prepare(
+        `
       SELECT ci.product_SKU, ci.quantity, p.product_name, p.product_price, p.product_slug
       FROM cart_items ci
       JOIN products p ON p.product_SKU = ci.product_SKU
       WHERE ci.cart_id = ?
-    `).all(cart.id);
+    `
+      )
+      .all(cart.id);
     return res.json(items);
   }
 
@@ -293,35 +226,30 @@ app.post("/api/cart/remove", (req, res) => {
 
   if (req.session.user) {
     const cart = getOrCreateCart(req.session.user.id);
-    db.prepare("DELETE FROM cart_items WHERE cart_id = ? AND product_SKU = ?")
-      .run(cart.id, product_SKU);
+    db.prepare(
+      "DELETE FROM cart_items WHERE cart_id = ? AND product_SKU = ?"
+    ).run(cart.id, product_SKU);
 
-    const items = db.prepare(`
+    const items = db
+      .prepare(
+        `
       SELECT ci.product_SKU, ci.quantity, p.product_name, p.product_price, p.product_slug
       FROM cart_items ci
       JOIN products p ON p.product_SKU = ci.product_SKU
       WHERE ci.cart_id = ?
-    `).all(cart.id);
+    `
+      )
+      .all(cart.id);
     return res.json(items);
   }
 
   // Gäst
   if (!req.session.cart) req.session.cart = [];
-  req.session.cart = req.session.cart.filter((i) => i.product_SKU !== product_SKU);
+  req.session.cart = req.session.cart.filter(
+    (i) => i.product_SKU !== product_SKU
+  );
   res.json(req.session.cart);
 });
-
-// app.post("/api/cart/update", (req, res) => {
-//   const { product_SKU, quantity } = req.body;
-//   if (!req.session.cart) req.session.cart = [];
-
-//   const item = req.session.cart.find((i) => i.product_SKU === product_SKU);
-//   if (item) {
-//     item.quantity = quantity;
-//   }
-
-//   res.json(req.session.cart);
-// });
 
 // UPDATE quantity
 app.post("/api/cart/update", (req, res) => {
@@ -329,15 +257,20 @@ app.post("/api/cart/update", (req, res) => {
 
   if (req.session.user) {
     const cart = getOrCreateCart(req.session.user.id);
-    db.prepare("UPDATE cart_items SET quantity = ? WHERE cart_id = ? AND product_SKU = ?")
-      .run(quantity, cart.id, product_SKU);
+    db.prepare(
+      "UPDATE cart_items SET quantity = ? WHERE cart_id = ? AND product_SKU = ?"
+    ).run(quantity, cart.id, product_SKU);
 
-    const items = db.prepare(`
+    const items = db
+      .prepare(
+        `
       SELECT ci.product_SKU, ci.quantity, p.product_name, p.product_price, p.product_slug
       FROM cart_items ci
       JOIN products p ON p.product_SKU = ci.product_SKU
       WHERE ci.cart_id = ?
-    `).all(cart.id);
+    `
+      )
+      .all(cart.id);
     return res.json(items);
   }
 
@@ -348,12 +281,7 @@ app.post("/api/cart/update", (req, res) => {
   res.json(req.session.cart);
 });
 
-// app.post("/api/cart/clear", (req, res) => {
-//   req.session.cart = [];
-//   res.json([]);
-// });
-
-// CLEAR cart
+// CLEAR cart används inte
 app.post("/api/cart/clear", (req, res) => {
   if (req.session.user) {
     const cart = getOrCreateCart(req.session.user.id);
@@ -669,6 +597,79 @@ function requireAdmin(req, res, next) {
   }
   next();
 }
+
+app.post("/api/orders", (req, res) => {
+  const { firstName, lastName, email, street, postalCode, city, newsletter } =
+    req.body;
+
+  // Hämta kundvagn
+  let cartItems = [];
+  if (req.session.user) {
+    const cart = getOrCreateCart(req.session.user.id);
+    cartItems = db
+      .prepare(
+        `
+      SELECT ci.product_SKU, ci.quantity, p.product_price
+      FROM cart_items ci
+      JOIN products p ON p.product_SKU = ci.product_SKU
+      WHERE ci.cart_id = ?
+    `
+      )
+      .all(cart.id);
+  } else {
+    cartItems = req.session.cart || [];
+    cartItems = cartItems.map((i) => {
+      const product = db
+        .prepare("SELECT product_price FROM products WHERE product_SKU = ?")
+        .get(i.product_SKU);
+      return { ...i, price: product.product_price };
+    });
+  }
+
+  if (cartItems.length === 0) {
+    return res.status(400).json({ error: "Kundvagnen är tom" });
+  }
+
+  // Skapa order
+  const result = db
+    .prepare(
+      `
+    INSERT INTO orders (user_id, first_name, last_name, email, street, postal_code, city, newsletter)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `
+    )
+    .run(
+      req.session.user ? req.session.user.id : null,
+      firstName,
+      lastName,
+      email,
+      street,
+      postalCode,
+      city,
+      newsletter ? 1 : 0
+    );
+
+  const orderId = result.lastInsertRowid;
+
+  // Spara orderrader
+  const insertItem = db.prepare(`
+    INSERT INTO order_items (order_id, product_SKU, quantity, price)
+    VALUES (?, ?, ?, ?)
+  `);
+  for (const item of cartItems) {
+    insertItem.run(orderId, item.product_SKU, item.quantity, item.price);
+  }
+
+  // Töm cart
+  if (req.session.user) {
+    const cart = getOrCreateCart(req.session.user.id);
+    db.prepare("DELETE FROM cart_items WHERE cart_id = ?").run(cart.id);
+  } else {
+    req.session.cart = [];
+  }
+
+  res.json({ success: true, orderId });
+});
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server kör på http://localhost:${PORT}`));
