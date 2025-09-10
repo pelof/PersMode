@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../helpers/db");
+const { getOrCreateCart, getCartItems } = require("../helpers/cart");
 
 router.get("/", (req, res) => {
   if (req.session.user) {

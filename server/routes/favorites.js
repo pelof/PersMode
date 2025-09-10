@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../helpers/db");
+const { getFavorites } = require("../helpers/favorites");
 
 
 // Hämta favoriter (om inloggad: från db, annars från session)
@@ -8,15 +9,7 @@ const db = require("../helpers/db");
 router.get("/", (req, res) => {
   // från db
   if (req.session.user) {
-    const favorites = db
-      .prepare(
-        `
-      SELECT p.* FROM favorites f
-      JOIN products p ON p.product_SKU = f.product_SKU
-      WHERE f.user_id = ?
-      `
-      )
-      .all(req.session.user.id);
+    const favorites = getFavorites(req);
     return res.json(favorites);
   }
 

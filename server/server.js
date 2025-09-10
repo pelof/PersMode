@@ -61,7 +61,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/favorites", favoritesRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api", authRoutes); // login, logout, register, me
-// app.use("/api/orders", ordersRoutes);
+app.use("/api/orders", ordersRoutes);
 app.use("/api/admin", adminRoutes);
 
 
