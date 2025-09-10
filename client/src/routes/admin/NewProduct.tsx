@@ -7,61 +7,6 @@ export function NewProduct() {
   const { data, isLoading } = useCategories();
   const categories = data;
 
-  // Mutation för att skapa produkt
-  // const createProduct = useMutation({
-  //   mutationFn: async (body: any) => {
-  //     const res = await fetch("http://localhost:5000/api/products", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(body),
-  //     });
-  //     if (!res.ok) {
-  //       const err = await res.json();
-  //       throw new Error(err.error || "Misslyckades att spara produkt");
-  //     }
-  //     return res.json();
-  //   },
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["products"] }); // om du har en produktlista
-  //     alert("Produkten sparad!");
-  //   },
-  //   onError: (error: any) => {
-  //     alert(error.message);
-  //   },
-  // });
-
-  // function handleCategoryChange(id: number) {
-  //   setSelectedCategories((prev) =>
-  //     prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
-  //   );
-  // }
-
-  // function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-  //   e.preventDefault();
-  //   const formData = new FormData(e.currentTarget);
-
-  //   //Onödig?
-  //   if (!selectedCategory) {
-  //     alert("Välj en kategori");
-  //     return;
-  //   }
-
-  //   const body = {
-  //     product_name: formData.get("name"),
-  //     product_description: formData.get("description"),
-  //     product_image: formData.get("image"), // TODO: file upload separat
-  //     product_brand: formData.get("brand"),
-  //     product_SKU: formData.get("SKU"),
-  //     product_price: Number(formData.get("price")),
-  //     product_published: formData.get("published"),
-  //     category_ids: [selectedCategory],
-  //   };
-
-  //   createProduct.mutate(body);
-  //   e.currentTarget.reset();
-  //   setSelectedCategory("");
-  // }
-
   // TODO flytta logik till egen fil
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

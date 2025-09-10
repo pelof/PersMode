@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 
 
 // --- GET CART ---
@@ -8,7 +7,7 @@ export function useCart() {
     queryKey: ["cart"],
     queryFn: () =>
       fetch("http://localhost:5000/api/cart", {
-        credentials: "include", // <- måste vara med
+        credentials: "include",
       }).then((res) => res.json()),
   });
 }
@@ -21,9 +20,10 @@ export function useAddToCart() {
       fetch("http://localhost:5000/api/cart/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // <- måste vara med
+        credentials: "include",
         body: JSON.stringify({ product_SKU, quantity }),
       }).then((res) => res.json()),
+      //TODO den här raden kan flyttas till en helper, alla mutationer använder den.
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cart"] }),
   });
 }
@@ -36,7 +36,7 @@ export function useRemoveFromCart() {
             fetch("http://localhost:5000/api/cart/remove", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // <- måste vara med
+        credentials: "include",
         body: JSON.stringify({ product_SKU }),
       }).then((res) => res.json()),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cart"] }),
@@ -47,10 +47,15 @@ export function useRemoveFromCart() {
 export function useUpdateCart() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ product_SKU, quantity}: { product_SKU: String; quantity: number }) =>
-            axios.post("http://localhost:5000/api/cart/update", { product_SKU, quantity}, {withCredentials: true}),
+        mutationFn: ({ product_SKU, quantity}: { product_SKU: string; quantity: number }) =>
+        fetch("http://localhost:5000/api/cart/update",{
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        credentials: "include",
+        body: JSON.stringify({ product_SKU, quantity}),
+        }).then((res) => res.json()),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["cart"]});
+            queryClient.invalidateQueries({ queryKey: ["cart"] });
         },
     });
 }
