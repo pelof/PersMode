@@ -359,7 +359,7 @@ app.post("/api/products", upload.single("image"), (req, res) => {
   let product_image = null;
 
   if (req.file) {
-    // Skapa hash av filens innehåll
+    // Skapa hash av filens innehåll - för att slippa ha placeholderbilden massa ggr i db. Onödigt vid produktion
     const hash = crypto.createHash("md5").update(req.file.buffer).digest("hex");
     const ext = path.extname(req.file.originalname);
     const filename = `${hash}${ext}`;
@@ -407,10 +407,59 @@ app.post("/api/products", upload.single("image"), (req, res) => {
   }
 });
 
+
+app.delete("/api/admin/products/:sku", (req, res) => {
+  const { sku } = req.params;
+
+  try {
+    const product = db
+      .prepare("SELECT product_image FROM products WHERE product_SKU = ?")
+      .get(sku);
+
+    if (!product) {
+      return res.status(404).json({ error: "Produkten hittades inte" });
+    }
+
+    // Ta bort produkt från databasen
+    const stmt = db.prepare("DELETE FROM products WHERE product_SKU = ?");
+    const info = stmt.run(sku);
+
+    if (info.changes === 0) {
+      return res.status(404).json({ error: "Produkten hittades inte" });
+    }
+
+    // Kolla om någon annan använder samma bild innan vi raderar den
+    if (product.product_image) {
+      const otherUsers = db
+        .prepare(
+          "SELECT COUNT(*) as count FROM products WHERE product_image = ?"
+        )
+        .get(product.product_image);
+
+      if (otherUsers.count === 0) {
+        const filePath = path.join(
+          __dirname,
+          "public/images/products",
+          product.product_image
+        );
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Ett fel uppstod" });
+  }
+});
+
 app.get("/api/categories", (req, res) => {
   const categories = db.prepare("SELECT * FROM categories").all();
   res.json(categories);
 });
+
 app.delete("/api/categories/:slug", (req, res) => {
   const { slug } = req.params;
 
@@ -464,52 +513,6 @@ app.post("/api/categories", upload.single("image"), (req, res) => {
   }
 });
 
-app.delete("/api/admin/products/:sku", (req, res) => {
-  const { sku } = req.params;
-
-  try {
-    const product = db
-      .prepare("SELECT product_image FROM products WHERE product_SKU = ?")
-      .get(sku);
-
-    if (!product) {
-      return res.status(404).json({ error: "Produkten hittades inte" });
-    }
-
-    // Ta bort produkt från databasen
-    const stmt = db.prepare("DELETE FROM products WHERE product_SKU = ?");
-    const info = stmt.run(sku);
-
-    if (info.changes === 0) {
-      return res.status(404).json({ error: "Produkten hittades inte" });
-    }
-
-    // Kolla om någon annan använder samma bild innan vi raderar den
-    if (product.product_image) {
-      const otherUsers = db
-        .prepare(
-          "SELECT COUNT(*) as count FROM products WHERE product_image = ?"
-        )
-        .get(product.product_image);
-
-      if (otherUsers.count === 0) {
-        const filePath = path.join(
-          __dirname,
-          "public/images/products",
-          product.product_image
-        );
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
-        }
-      }
-    }
-
-    res.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Ett fel uppstod" });
-  }
-});
 
 // Registrera (för test)
 app.post("/api/register", async (req, res) => {
