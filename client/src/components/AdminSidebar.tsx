@@ -3,7 +3,7 @@ import { Link, useMatchRoute } from "@tanstack/react-router";
 
 export function AdminSidebar() {
 
-  // Kolla om vi är på products eller categories
+// Kolla om vi är på products eller categories
 const matchProductsFn = useMatchRoute();
 const matchCategoriesFn = useMatchRoute();
 

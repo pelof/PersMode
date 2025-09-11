@@ -29,7 +29,6 @@ const navigate = useNavigate();
     },
   });
 
-//   return { user, isLoading, logout: logoutMutation.mutate };
 return { user, isLoading, logout: () => logoutMutation.mutate() };
 
 }

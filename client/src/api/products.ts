@@ -24,13 +24,11 @@ async function fetchProductBySlug(slug: string): Promise<Product> {
 }
 
 // react query hooks
-
 export function useProducts(params: { category?: string; q?: string; new?: string; random?: string } = {}) {
   return useQuery<Product[]>({
     queryKey: ["products", params],
     queryFn: () => fetchProducts(params),
     enabled: !!params,
-    //  enabled: Object.values(params).some(Boolean),
   });
 }
 

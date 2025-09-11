@@ -6,8 +6,7 @@ export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-    const queryClient = useQueryClient();
-
+  const queryClient = useQueryClient();
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
@@ -40,9 +39,9 @@ export function Login() {
           <div className="my-5">
             <label htmlFor="">E-Post</label>
             <input
-              id="firstName"
+              id="email"
               type="text"
-              name="firstName"
+              name="email"
               onChange={(e) => setEmail(e.target.value)}
               required
               className="border border-gray-500 rounded px-3 py-1 mt-2 w-full"
@@ -51,9 +50,9 @@ export function Login() {
           <div>
             <label htmlFor="">Lösenord</label>
             <input
-              id="firstName"
-              type="text"
-              name="firstName"
+              id="password"
+              type="password"
+              name="password"
               onChange={(e) => setPassword(e.target.value)}
               required
               className="border border-gray-500 rounded px-3 py-1 mt-2 w-full"
@@ -64,11 +63,11 @@ export function Login() {
               {(loginMutation.error as Error).message}
             </p>
           )}
-          {loginMutation.isSuccess && (
+          {/* {loginMutation.isSuccess && (
             <p className="text-green-600">
               Konto skapat! Du skickas vidare till login...
             </p>
-          )}
+          )} */}
           <div className="flex justify-between">
             <Link
               to="/register"

@@ -75,7 +75,7 @@ export function NewProduct() {
           placeholder="Ange namn"
           maxLength={25}
           required
-          className="border border-gray-500 rounded px-3 py-1 w-1/3 my-3"
+          className="border border-gray-500 rounded px-3 py-1 w-75 my-3"
         />
         <label className="font-bold" htmlFor="description">
           Beskrivning
@@ -85,12 +85,12 @@ export function NewProduct() {
           id="description"
           placeholder="Ange beskrivning"
           required
-          className="border border-gray-500 rounded px-3 py-1 w-1/2 h-50 my-3"
+          className="border border-gray-500 rounded px-3 py-1 w-100 h-50 my-3"
         ></textarea>
         <label className="font-bold">Bild</label>
         <label
           htmlFor="image"
-          className="border border-gray-500 rounded text-center px-3 py-1 w-1/8 my-3 inline-block cursor-pointer hover:bg-gray-100"
+          className="border border-gray-500 rounded text-center px-3 py-1 w-25 my-3 inline-block cursor-pointer hover:bg-gray-100"
         >
           Välj bild
         </label>
@@ -109,7 +109,7 @@ export function NewProduct() {
           name="brand"
           id="brand"
           required
-          className="border border-gray-500 rounded px-3 py-1 w-1/2 my-3"
+          className="border border-gray-500 rounded px-3 py-1 w-75 my-3"
         />
         <label className="font-bold" htmlFor="SKU">
           SKU
@@ -122,7 +122,7 @@ export function NewProduct() {
           pattern="[A-Z]{3}[0-9]{3}"
           title="Exempel: AAA123"
           required
-          className="border border-gray-500 rounded px-3 py-1 w-1/6 my-3"
+          className="border border-gray-500 rounded px-3 py-1 w-30 my-3"
         />
         <label className="font-bold" htmlFor="price">
           Pris
@@ -132,7 +132,7 @@ export function NewProduct() {
           name="price"
           id="price"
           required
-          className="border border-gray-500 rounded px-1 py-1 pl-2 w-1/6 my-3"
+          className="border border-gray-500 rounded px-1 py-1 pl-2 w-30 my-3"
         />
         <label className="font-bold" htmlFor="published">
           Publicieringsdatum
@@ -142,7 +142,7 @@ export function NewProduct() {
           name="published"
           id="published"
           required
-          className="border border-gray-500 rounded px-3 py-1 w-1/5 my-3"
+          className="border border-gray-500 rounded px-3 py-1 w-40 my-3"
         />
         {/* TODO: ev mer avancerad lösning som kryssrutor eller multi select */}
         <label className="font-bold" htmlFor="category">
@@ -153,7 +153,7 @@ export function NewProduct() {
           name="category"
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(Number(e.target.value))}
-          className="border border-gray-500 rounded px-2 py-1 w-1/5 my-3"
+          className="border border-gray-500 rounded px-2 py-1 w-40 my-3"
           required
         >
           <option value="">Välj kategori</option>

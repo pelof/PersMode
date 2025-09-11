@@ -146,4 +146,3 @@ export function PublicFooter() {
     </>
   );
 }
-//TODO: kan man ge en produkt flera kategorier? behövs foreign key då?

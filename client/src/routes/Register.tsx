@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 export function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState("user");
   const navigate = useNavigate();
 
   const registerMutation = useMutation({
@@ -50,7 +50,7 @@ export function Register() {
             <label htmlFor="password">Lösenord</label>
             <input
               id="password"
-              type="text"
+              type="password"
               name="password"
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -58,7 +58,7 @@ export function Register() {
             />
           </div>
           <div>
-            <input type="checkbox" onChange={(e) => setRole(e.target.checked ? "admin" : "user")} /> <span>admin</span>
+            <input type="checkbox" checked={role === "admin"} onChange={(e) => setRole(e.target.checked ? "admin" : "user")} /> <span>admin</span>
           </div>
 
           {registerMutation.isError && (

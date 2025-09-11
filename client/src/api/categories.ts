@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const API_URL = "http://localhost:5000/api/admin/categories";
 
-
 async function deleteCategory(slug: string) {
     const res = await fetch(`${API_URL}/${slug}`, {
         method: "DELETE",

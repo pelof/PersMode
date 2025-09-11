@@ -46,7 +46,6 @@ const rootRoutePublic = createRoute({
   ),
 });
 
-
 // admin-route
 const rootRouteAdmin = createRoute({
   getParentRoute: () => rootRoute,
@@ -55,14 +54,14 @@ const rootRouteAdmin = createRoute({
     <div className="flex flex-col min-h-screen">
       <AdminHeader />
       <div className="flex flex-1">
-        <AdminSidebar/>
+        <AdminSidebar />
         <main className="flex-1 m-10">
           <Outlet />
         </main>
       </div>
     </div>
   ),
-beforeLoad: async () => {
+  beforeLoad: async () => {
     const res = await fetch("http://localhost:5000/api/me", {
       credentials: "include",
     });
@@ -79,7 +78,6 @@ beforeLoad: async () => {
     return { user }; // tillgängligt som routeContext
   },
 });
-
 
 //child routes
 
@@ -121,7 +119,7 @@ const loginRoute = createRoute({
     const res = await fetch("http://localhost:5000/api/me", {
       credentials: "include",
     });
-      const user = await res.json();
+    const user = await res.json();
 
     if (user) {
       throw redirect({ to: "/" });
@@ -136,7 +134,7 @@ const registerRoute = createRoute({
     const res = await fetch("http://localhost:5000/api/me", {
       credentials: "include",
     });
-      const user = await res.json();
+    const user = await res.json();
 
     if (user) {
       throw redirect({ to: "/" });
@@ -184,7 +182,6 @@ const newCategoryRoute = createRoute({
 //route tree
 const routeTree = rootRoute.addChildren([
   rootRoutePublic.addChildren([
-
     homeRoute,
     productRoute,
     favoritesRoute,
@@ -205,5 +202,3 @@ const routeTree = rootRoute.addChildren([
   ]),
 ]);
 export const router = createRouter({ routeTree });
-
-
