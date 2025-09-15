@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const API_URL = "http://localhost:5000/api/cart"
 
+// Inte indelad i rena API-funktioner och hooks
 
 // --- GET CART ---
 export function useCart() {

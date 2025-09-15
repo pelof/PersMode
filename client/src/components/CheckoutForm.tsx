@@ -1,28 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { useOrderMutation } from "@/api/order";
 
 export function CheckoutForm() {
-  const navigate = useNavigate();
-//TODO kan flyttas till egen fil
-  const orderMutation = useMutation({
-    mutationFn: async (data: Record<string, string | FormDataEntryValue>) => {
-      const res = await fetch("http://localhost:5000/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error("Kunde inte skapa order");
-      return res.json();
-    },
-    onSuccess: (result) => {
-      alert(`Tack för din order! Ordernummer: ${result.orderId}`);
-      navigate({ to: "/order/confirmation" }); // redirect till confirmation
-    },
-    onError: (err: any) => {
-      alert(err.message || "Något gick fel");
-    },
-  });
+  const orderMutation = useOrderMutation();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
