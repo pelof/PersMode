@@ -1,20 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../helpers/db");
-const crypto = require("crypto");
-const path = require("path");
-
-// function generateSlug(product_name) {
-//   return product_name
-//     .toLowerCase()
-//     .replace(/å/g, "a")
-//     .replace(/ä/g, "a")
-//     .replace(/ö/g, "o")
-//     .replace(/[^a-z0-9]+/g, "-") // Byt ut specialtecken mot "-"
-//     .replace(/^-|-$/g, ""); // Ta bort "-" i början eller slutet
-// }
-
-// const today = new Date().toISOString().split("T")[0];
 
 router.get("/", (req, res) => {
   const { category, q, exclude, limit, random, new: isNew } = req.query;

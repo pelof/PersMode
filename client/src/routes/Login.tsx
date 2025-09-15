@@ -8,6 +8,7 @@ export function Login() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  //TODO kan flyttas in i api-fil
   const loginMutation = useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
       const res = await fetch("http://localhost:5000/api/login", {

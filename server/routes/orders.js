@@ -14,10 +14,11 @@ router.post("/", (req, res) => {
     const cart = getOrCreateCart(req.session.user.id);
     cartItems = db
       .prepare(
+        //INNER JOIN
         `
-      SELECT ci.product_SKU, ci.quantity, p.product_price
+      SELECT ci.product_SKU, ci.quantity, p.product_price AS price
       FROM cart_items ci
-      JOIN products p ON p.product_SKU = ci.product_SKU
+      JOIN products p ON p.product_SKU = ci.product_SKU 
       WHERE ci.cart_id = ?
     `
       )

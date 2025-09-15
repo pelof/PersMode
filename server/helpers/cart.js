@@ -31,6 +31,4 @@ function getCartItems(cartId) {
   return cartItems;
 }
 
-
-
 module.exports = { getCart, getCartItems, getOrCreateCart };

@@ -14,7 +14,7 @@ function generateSlug(product_name) {
     .replace(/ö/g, "o")
     .replace(/[^a-z0-9]+/g, "-") // Byt ut specialtecken mot "-"
     .replace(/^-|-$/g, ""); // Ta bort "-" i början eller slutet
-}
+};
 
 router.get("/products", (req, res) => {
   const products = db.prepare("SELECT * FROM products").all();

@@ -1,5 +1,5 @@
 const express = require("express");
-const cors = require("cors");
+const cors = require("cors"); // behövs när frontend och backend körs på olika domäner
 const session = require("express-session");
 const path = require("path");
 const multer = require("multer");
@@ -7,31 +7,21 @@ const multer = require("multer");
 const productsRoutes = require("./routes/products");
 const cartRoutes = require("./routes/cart");
 const favoritesRoutes = require("./routes/favorites");
-const categoriesRoutes = require("./routes/categories");
 const authRoutes = require("./routes/auth");
 const ordersRoutes = require("./routes/orders");
 const adminRoutes = require("./routes/admin");
 
-
-// const Database = require("better-sqlite3");
-// // för att interagera med filsystemet
-// const fs = require("fs");
-// const crypto = require("crypto");
-// const bcrypt = require("bcrypt");
-
-// const db = new Database("./db/persmode.db");
-// db.pragma("foreign_keys = ON"); //för stöd av foreign key
 
 const app = express();
 
 app.use(
   cors({
     origin: "http://localhost:5173",
-    credentials: true,
+    credentials: true, // Ja till cookies
   })
 );
 
-app.use(express.json());
+app.use(express.json()); // Express kan tolka JSON i req.body
 
 app.use(
   session({
@@ -46,20 +36,23 @@ app.use(
     },
   })
 );
+
+// Pekar på mapparna med bilder. Behövs den första?
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 app.use(
   "/images/products",
   express.static(path.join(__dirname, "public/images/products"))
 );
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
-app.locals.upload = upload; // gör multer åtkomlig för routes
+// Filuppladdning
+const storage = multer.memoryStorage(); //Filer sparas i RAM
+const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); //Max 5 mb
+app.locals.upload = upload; // gör multer åtkomlig för routes genom req.app.locals.upload
 
+// Routes
 app.use("/api/products", productsRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/favorites", favoritesRoutes);
-app.use("/api/categories", categoriesRoutes);
 app.use("/api", authRoutes); // login, logout, register, me
 app.use("/api/orders", ordersRoutes);
 app.use("/api/admin", adminRoutes);
@@ -68,6 +61,14 @@ app.use("/api/admin", adminRoutes);
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server kör på http://localhost:${PORT}`));
 
+// const Database = require("better-sqlite3");
+// // för att interagera med filsystemet
+// const fs = require("fs");
+// const crypto = require("crypto");
+// const bcrypt = require("bcrypt");
+
+// const db = new Database("./db/persmode.db");
+// db.pragma("foreign_keys = ON"); //för stöd av foreign key
 
 // function generateSlug(product_name) {
 //   return product_name
