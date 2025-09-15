@@ -1,12 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+const API_URL = "http://localhost:5000/api/cart"
+
 
 // --- GET CART ---
 export function useCart() {
   return useQuery({
     queryKey: ["cart"],
     queryFn: () =>
-      fetch("http://localhost:5000/api/cart", {
+      fetch(`${API_URL}`, {
         credentials: "include",
       }).then((res) => res.json()),
   });
@@ -17,7 +19,7 @@ export function useAddToCart() {
   const queryClient = useQueryClient(); //useQueryClient är react query (tanstack querys) cache-hanterare.
   return useMutation({ // returnerar useMutation-instans. ger tillgång till metoder som .mutate och statusfält(isLoading, isError osv)
     mutationFn: ({ product_SKU, quantity }: { product_SKU: string; quantity: number }) => //mutationFn definerar logiken. Tar in objekt med sku och quantity
-      fetch("http://localhost:5000/api/cart/add", {
+      fetch(`${API_URL}/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include", //Skickar med cookies/session
@@ -35,7 +37,7 @@ export function useRemoveFromCart() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({ product_SKU }: { product_SKU: string}) =>
-            fetch("http://localhost:5000/api/cart/remove", {
+            fetch(`${API_URL}/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -50,7 +52,7 @@ export function useUpdateCart() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({ product_SKU, quantity}: { product_SKU: string; quantity: number }) =>
-        fetch("http://localhost:5000/api/cart/update",{
+        fetch(`${API_URL}/update`,{
         method: "POST",
         headers: { "Content-Type": "application/json"},
         credentials: "include",
@@ -61,5 +63,3 @@ export function useUpdateCart() {
         },
     });
 }
-
-//TODO: i products använde jag API_URL, men funkade inte förut. testa igen

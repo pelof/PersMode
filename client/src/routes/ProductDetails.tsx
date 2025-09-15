@@ -7,57 +7,55 @@ import { useState } from "react";
 import { useFavorites, useToggleFavorite } from "@/api/favorites";
 
 export function ProductDetails() {
+  // inte säkraste sättet, men funkar
+  const { slug } = useParams({ strict: false });
+  const { data: product, isLoading, error } = useProduct(slug);
+  const addToCart = useAddToCart();
+  const [quantity, setQuantity] = useState(1);
 
-  
-    
-    // inte säkraste sättet, men funkar
-    const { slug } = useParams({ strict: false });
-    const { data: product, isLoading, error } = useProduct(slug);
-    const addToCart = useAddToCart();
-    const [quantity, setQuantity] = useState(1);
+  const { data: favorites } = useFavorites();
+  const toggleFavorite = useToggleFavorite();
 
-     const { data: favorites } = useFavorites();
-    const toggleFavorite = useToggleFavorite();
-    
-    if (isLoading) return <p>Laddar...</p>;
-    if (error) return <p>Ett fel uppstod: {error.message}</p>;
-    if (!product) return <p>Produkten kunde inte hittas</p>;
-    
-    const handleAddToCart = () => {
-      if (!product) return;
-      addToCart.mutate({ product_SKU: product.product_SKU, quantity });
-    };
-    
-    const today = new Date();
-    const publishedDate = new Date(product.product_published);
-    
-    const diffTime = today.getTime() - publishedDate.getTime();
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-    
-    const isNew = diffDays >= 0 && diffDays < 7;
-    
-    //Letar om produkten finns i favoriter. some returnerar true om minst ett objekt matchar.
-    const isFavorite = favorites?.some(fav => fav.product_SKU === product.product_SKU);
+  if (isLoading) return <p>Laddar...</p>;
+  if (error) return <p>Ett fel uppstod: {error.message}</p>;
+  if (!product) return <p>Produkten kunde inte hittas</p>;
+
+  const handleAddToCart = () => {
+    if (!product) return;
+    addToCart.mutate({ product_SKU: product.product_SKU, quantity });
+  };
+
+  const today = new Date();
+  const publishedDate = new Date(product.product_published);
+
+  const diffTime = today.getTime() - publishedDate.getTime();
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+  const isNew = diffDays >= 0 && diffDays < 7;
+
+  //Letar om produkten finns i favoriter. some returnerar true om minst ett objekt matchar.
+  const isFavorite = favorites?.some(
+    (fav) => fav.product_SKU === product.product_SKU
+  );
 
   return (
     <section>
       <div className="flex flex-col md:flex-row">
         <div className="relative">
           <img
-              src={`http://localhost:5000/images/products/${product.product_image}`}
-
+            src={`http://localhost:5000/images/products/${product.product_image}`}
             alt={product.product_name}
             className="w-full min-w-md aspect-3/4"
           />
           <button
-                      type="button"
-                      onClick={() => {
-                        toggleFavorite.mutate(product.product_SKU);
-                      }}
-                      className="absolute right-3 bottom-3 text-4xl cursor-pointer hover:animate-[heartbeat_0.9s_ease-in-out_infinite_]"
-                    >
-                      {isFavorite ? <FaHeart /> : <FaRegHeart/>}
-                    </button>
+            type="button"
+            onClick={() => {
+              toggleFavorite.mutate(product.product_SKU);
+            }}
+            className="absolute right-3 bottom-3 text-4xl cursor-pointer hover:animate-[heartbeat_0.9s_ease-in-out_infinite_]"
+          >
+            {isFavorite ? <FaHeart /> : <FaRegHeart />}
+          </button>
           {isNew && (
             <div className="absolute left-4 top-4 bg-black text-white px-2 py-1 rounded">
               Nyhet
