@@ -1,4 +1,3 @@
-
 import type { Product } from "@/types";
 import { Link } from "@tanstack/react-router";
 

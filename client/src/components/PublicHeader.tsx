@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { FaHeart, FaSearch } from "react-icons/fa";
 import { FaBasketShopping } from "react-icons/fa6";
 import { IoLogIn, IoLogOut } from "react-icons/io5";
+import { GrUserAdmin } from "react-icons/gr";
 
 
 export function PublicHeader() {
@@ -29,13 +30,12 @@ export function PublicHeader() {
             />
           </form>
           <div className="header-icons flex flex-row gap-2 ml-3 md:gap-3">
-            {/* TODO: bonus: ikon och länk till adminsidorna om användaren är admin */}
+            {user?.role === "admin" && 
+            <Link to="/admin/products"> <GrUserAdmin className="text-3xl md:text-2xl"/></Link>}
             <Link to="/favorites" className="text-3xl md:text-2xl"><FaHeart /></Link>
             <Link to="/cart" className="text-3xl md:text-2xl"><FaBasketShopping /></Link>
-            {/* <Link to="/login" className="text-4xl md:text-3xl"><IoLogIn /></Link> */}
              {user ? (
           <button
-          //TODO ladda om sidan när du loggar ut
             onClick={() => logout()}
             className="text-4xl md:text-3xl cursor-pointer"
           >

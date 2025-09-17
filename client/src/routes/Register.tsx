@@ -1,33 +1,16 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/auth/useAuth";
 
 export function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
-  const navigate = useNavigate();
+  const [role, setRole] = useState("user");
 
-  const registerMutation = useMutation({
-    mutationFn: async (user: { email: string; password: string; role: string }) => {
-      const res = await fetch("http://localhost:5000/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(user),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Något gick fel");
-      return data;
-    },
-    onSuccess: () => {
-      navigate({ to: "/login" }); // skicka användaren till login efter registrering
-    },
-  });
+  const { register, registerStatus, registerError } = useAuth();
 
   function handleRegister(e: React.FormEvent) {
     e.preventDefault();
-    registerMutation.mutate({ email, password, role });
+    register({ email, password, role });
   }
 
   return (
@@ -50,7 +33,7 @@ export function Register() {
             <label htmlFor="password">Lösenord</label>
             <input
               id="password"
-              type="text"
+              type="password"
               name="password"
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -58,18 +41,19 @@ export function Register() {
             />
           </div>
           <div>
-            <input type="checkbox" onChange={(e) => setRole(e.target.checked ? "admin" : "user")} /> <span>admin</span>
+            <input
+              type="checkbox"
+              checked={role === "admin"}
+              onChange={(e) => setRole(e.target.checked ? "admin" : "user")}
+            />{" "}
+            <span>admin</span>
           </div>
 
-          {registerMutation.isError && (
-            <p className="text-red-600">
-              {(registerMutation.error as Error).message}
-            </p>
+          {registerError && (
+            <p className="text-red-600">Något gick fel vid registrering.</p>
           )}
-          {registerMutation.isSuccess && (
-            <p className="text-green-600">
-              Konto skapat! Du skickas vidare till login...
-            </p>
+          {registerStatus === "pending" && (
+            <p className="text-gray-600">Registrerar...</p>
           )}
           <div className="flex justify-end">
             <button

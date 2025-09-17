@@ -1,10 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-const API_URL = "http://localhost:5000/api";
-
+const API_URL = "http://localhost:5000/api/admin/categories";
 
 async function deleteCategory(slug: string) {
-    const res = await fetch(`${API_URL}/categories/${slug}`, {
+    const res = await fetch(`${API_URL}/${slug}`, {
         method: "DELETE",
     });
     if (!res.ok) throw new Error("Failed to delete category");
@@ -16,7 +15,7 @@ export function useCategories() {
     return useQuery({
         queryKey: ["categories"],
         queryFn: async () => {
-            const res = await fetch(`${API_URL}/categories`);
+            const res = await fetch(`${API_URL}`);
             if (!res.ok) throw new Error("Failed to fetch categories");
             return res.json();
         },

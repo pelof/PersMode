@@ -1,12 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+const API_URL = "http://localhost:5000/api/cart"
+
+// Inte indelad i rena API-funktioner och hooks
 
 // --- GET CART ---
 export function useCart() {
   return useQuery({
     queryKey: ["cart"],
     queryFn: () =>
-      fetch("http://localhost:5000/api/cart", {
+      fetch(`${API_URL}`, {
         credentials: "include",
       }).then((res) => res.json()),
   });
@@ -14,17 +17,19 @@ export function useCart() {
 
 // --- ADD TO CART ---
 export function useAddToCart() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ product_SKU, quantity }: { product_SKU: string; quantity: number }) =>
-      fetch("http://localhost:5000/api/cart/add", {
+  const queryClient = useQueryClient(); //useQueryClient är react query (tanstack querys) cache-hanterare.
+  return useMutation({ // returnerar useMutation-instans. ger tillgång till metoder som .mutate och statusfält(isLoading, isError osv)
+    mutationFn: ({ product_SKU, quantity }: { product_SKU: string; quantity: number }) => //mutationFn definerar logiken. Tar in objekt med sku och quantity
+      fetch(`${API_URL}/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        credentials: "include", //Skickar med cookies/session
         body: JSON.stringify({ product_SKU, quantity }),
-      }).then((res) => res.json()),
+      }).then((res) => res.json()), //svaret res.json() blir tillgängligt i mutationens "data"
       //TODO den här raden kan flyttas till en helper, alla mutationer använder den.
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cart"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cart"] }), 
+    //När mutationens anrop lyckas: invalidera alla queries med ["cart"]. Så react query automatiskt 
+    // hämtar om varukorgen från servern, så UI visar ny data
   });
 }
 
@@ -33,7 +38,7 @@ export function useRemoveFromCart() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({ product_SKU }: { product_SKU: string}) =>
-            fetch("http://localhost:5000/api/cart/remove", {
+            fetch(`${API_URL}/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -48,7 +53,7 @@ export function useUpdateCart() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({ product_SKU, quantity}: { product_SKU: string; quantity: number }) =>
-        fetch("http://localhost:5000/api/cart/update",{
+        fetch(`${API_URL}/update`,{
         method: "POST",
         headers: { "Content-Type": "application/json"},
         credentials: "include",
@@ -59,5 +64,3 @@ export function useUpdateCart() {
         },
     });
 }
-
-//TODO: i products använde jag API_URL, men funkade inte förut. testa igen

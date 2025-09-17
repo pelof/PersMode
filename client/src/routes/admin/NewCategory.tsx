@@ -1,4 +1,5 @@
 export function NewCategory() {
+  //TODO både denna och samma i newProduct kan flyttas till egen fil.
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData();
@@ -15,7 +16,7 @@ export function NewCategory() {
       formData.append("image", imageInput.files[0]);
     }
 
-    fetch("http://localhost:5000/api/categories", {
+    fetch("http://localhost:5000/api/admin/categories", {
       method: "POST",
       body: formData, // OBS! inte JSON.stringify
     })
@@ -30,7 +31,7 @@ export function NewCategory() {
 
   return (
     <>
-      <h1 className="text-xl font-bold mb-5">Ny produkt</h1>
+      <h1 className="text-xl font-bold mb-5">Ny kategori</h1>
       <form className="flex flex-col" onSubmit={handleSubmit}>
           <label htmlFor="name" className="font-bold">
             Namn
@@ -41,14 +42,14 @@ export function NewCategory() {
             name="name"
             placeholder="Ange namn"
             required
-            className="border border-gray-500 rounded px-3 py-1 w-1/3 my-3"
+            className="border border-gray-500 rounded px-3 py-1 w-80 my-3"
             maxLength={25}
           />
 {/* TODO får error utan bra varning om filen är för stor */}
           <label className="font-bold">Bild</label>
           <label
             htmlFor="image"
-            className="border border-gray-500 rounded text-center px-3 py-1 w-1/8 my-3 inline-block cursor-pointer hover:bg-gray-100"
+            className="border border-gray-500 rounded text-center px-3 py-1 w-30 my-3 inline-block cursor-pointer hover:bg-gray-100"
           >
             Välj bild
           </label>
@@ -58,11 +59,12 @@ export function NewCategory() {
             id="image"
             name="image"
             className="hidden"
+            required
           />
         <button
           type="submit"
           // TODO bättre lösning på position
-          className="border border-gray-500 rounded px-3 py-1 w-25 my-3 mt-200"
+          className="border border-gray-500 rounded px-3 py-1 w-25 my-3 fixed bottom-10"
         >
           Lägg till
         </button>

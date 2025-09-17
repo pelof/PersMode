@@ -1,43 +1,16 @@
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-// import { useState } from "react";
-
+import { useOrderMutation } from "@/api/order";
 
 export function CheckoutForm() {
-const navigate = useNavigate();
-// const [loading, setLoading] = useState(false);
-
-  const orderMutation = useMutation({
-    mutationFn: async (data: Record<string, string | FormDataEntryValue>) => {
-      const res = await fetch("http://localhost:5000/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error("Kunde inte skapa order");
-      return res.json();
-    },
-    onSuccess: (result) => {
-      alert(`Tack för din order! Ordernummer: ${result.orderId}`);
-      navigate({ to: "/order/confirmation" }); // redirect till confirmation
-    },
-    onError: (err: any) => {
-      alert(err.message || "Något gick fel");
-    },
-  });
+  const orderMutation = useOrderMutation();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // setLoading(true);
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
-    orderMutation.mutate(data, {
-      // onSettled: () => setLoading(false),
-    })
-  }
+    orderMutation.mutate(data, {});
+  };
 
   return (
     <>
@@ -117,12 +90,15 @@ const navigate = useNavigate();
           Jag vill ta emot nyhetsbrev
         </label>
         <div className="flex justify-center py-3">
-        <button type="submit" aria-label="Genomför köp" className="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-700 hover:cursor-pointer w-50">
-          Köp
-        </button>
+          <button
+            type="submit"
+            aria-label="Genomför köp"
+            className="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-700 hover:cursor-pointer w-50"
+          >
+            Köp
+          </button>
         </div>
       </form>
     </>
   );
 }
-//funktionell checkout
