@@ -1,63 +1,13 @@
 import { useCategories } from "@/api/categories";
+import { useProductMutation } from "@/api/useProductMutation";
 import type { Category } from "@/types";
-import { useState } from "react";
 
 export function NewProduct() {
-  const [selectedCategory, setSelectedCategory] = useState<number | "">("");
+
+  const { selectedCategory, setSelectedCategory, handleSubmit} = useProductMutation();
+
   const { data, isLoading } = useCategories();
   const categories = data;
-
-  // TODO flytta logik till egen fil
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData();
-
-    const target = e.currentTarget as HTMLFormElement;
-
-    formData.append(
-      "product_name",
-      (target.elements.namedItem("name") as HTMLInputElement).value
-    );
-    formData.append(
-      "product_description",
-      (target.elements.namedItem("description") as HTMLTextAreaElement).value
-    );
-    formData.append(
-      "product_brand",
-      (target.elements.namedItem("brand") as HTMLInputElement).value
-    );
-    formData.append(
-      "product_SKU",
-      (target.elements.namedItem("SKU") as HTMLInputElement).value
-    );
-    formData.append(
-      "product_price",
-      (target.elements.namedItem("price") as HTMLInputElement).value
-    );
-    formData.append(
-      "product_published",
-      (target.elements.namedItem("published") as HTMLInputElement).value
-    );
-    formData.append("category_ids", JSON.stringify([selectedCategory]));
-
-    const imageInput = target.elements.namedItem("image") as HTMLInputElement;
-    if (imageInput.files && imageInput.files[0]) {
-      formData.append("image", imageInput.files[0]);
-    }
-
-    fetch("http://localhost:5000/api/admin/products", {
-      method: "POST",
-      body: formData, // OBS! inte JSON.stringify
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        alert("Produkt skapad!");
-        target.reset();
-        setSelectedCategory("");
-      })
-      .catch((err) => alert(err.message));
-  }
 
   if (isLoading) return <p>Laddar kategorier...</p>;
 
