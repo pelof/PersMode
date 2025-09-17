@@ -1,0 +1,404 @@
+-- database: /Users/pelof/Documents/Workspace/B1/Projekt/PersMode/server/db/persmode.db
+
+SELECT * FROM products;
+-- database: /Users/pelof/Documents/Workspace/B1/Projekt/PersMode/server/db/persmode.db
+
+SELECT * FROM "table-name";
+
+
+CREATE TABLE products (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    product_name VARCHAR(255),
+    product_description TEXT,
+    product_image TEXT,
+    product_brand VARCHAR(255),
+    product_SKU VARCHAR(100) UNIQUE,
+    product_slug VARCHAR(255) UNIQUE,
+    product_published DATE,
+    product_category VARCHAR(255),
+    product_price REAL
+);
+
+
+INSERT INTO products 
+(product_name, product_description, product_image, product_brand, product_SKU, product_slug, product_published, product_category)
+VALUES
+('Trådlösa Hörlurar', 'Högkvalitativa Bluetooth-hörlurar med brusreducering.', 'images/headphones.jpg', 'SoundMax', 'SKU001', 'tradlosa-horlurar', '2025-08-01', 'Elektronik'),
+('Gaming Mus', 'Ergonomisk mus med RGB-belysning och hög precision.', 'images/mouse.jpg', 'ProGamer', 'SKU002', 'gaming-mus', '2025-07-25', 'Datorer & Tillbehör'),
+('4K TV 55 tum', 'Smart-TV med stöd för HDR och streamingappar.', 'images/tv.jpg', 'VisionX', 'SKU003', '4k-tv-55', '2025-07-20', 'Hemelektronik'),
+('Kaffebryggare', 'Snabb kaffebryggare med timer och värmehållning.', 'images/coffee.jpg', 'BrewMaster', 'SKU004', 'kaffebryggare', '2025-06-15', 'Hushåll'),
+('Smartphone X200', 'Modern smartphone med OLED-skärm och snabb processor.', 'images/smartphone.jpg', 'TechOne', 'SKU005', 'smartphone-x200', '2025-05-10', 'Mobiltelefoner'),
+('Robotdammsugare', 'Självgående dammsugare med kartläggningsfunktion.', 'images/vacuum.jpg', 'CleanBot', 'SKU006', 'robotdammsugare', '2025-05-05', 'Hushåll'),
+('Träningsklocka', 'Smartwatch för träning med pulsmätning och GPS.', 'images/watch.jpg', 'FitTrack', 'SKU007', 'traningsklocka', '2025-04-28', 'Sport & Hälsa'),
+('Bärbar Dator 15"', 'Laptop med Intel i7 och 16GB RAM.', 'images/laptop.jpg', 'NotePro', 'SKU008', 'barbar-dator-15', '2025-04-15', 'Datorer & Tillbehör'),
+('Bluetooth Högtalare', 'Kompakt högtalare med kraftfullt ljud.', 'images/speaker.jpg', 'SoundBox', 'SKU009', 'bluetooth-hogtalare', '2025-03-30', 'Elektronik'),
+('Köksmaskin', 'Multifunktionell köksmaskin för bakning och matlagning.', 'images/mixer.jpg', 'CookMaster', 'SKU010', 'koksmaskin', '2025-03-20', 'Hushåll'),
+('Elcykel', 'Miljövänlig elcykel med lång batteritid.', 'images/ebike.jpg', 'EcoRide', 'SKU011', 'elcykel', '2025-03-10', 'Fordon'),
+('Barnvagn', 'Praktisk och lätt barnvagn för vardagsbruk.', 'images/stroller.jpg', 'BabyMove', 'SKU012', 'barnvagn', '2025-02-28', 'Barn & Baby'),
+('Skrivbord', 'Stilrent skrivbord i ek med metallben.', 'images/desk.jpg', 'NordicHome', 'SKU013', 'skrivbord', '2025-02-15', 'Möbler'),
+('Kontorsstol', 'Ergonomisk stol med justerbar höjd och ryggstöd.', 'images/chair.jpg', 'ErgoSeat', 'SKU014', 'kontorsstol', '2025-02-01', 'Möbler'),
+('Mikrovågsugn', 'Effektiv mikrovågsugn med grillfunktion.', 'images/microwave.jpg', 'HeatPro', 'SKU015', 'mikrovagsugn', '2025-01-25', 'Hushåll'),
+('Systemkamera', 'Professionell kamera med 24MP sensor.', 'images/camera.jpg', 'PhotoMax', 'SKU016', 'systemkamera', '2025-01-15', 'Elektronik'),
+('Trådlöst Tangentbord', 'Slimmat tangentbord med lång batteritid.', 'images/keyboard.jpg', 'KeyPro', 'SKU017', 'tradlost-tangentbord', '2025-01-05', 'Datorer & Tillbehör'),
+('Hörlur In-Ear', 'Lätta och bekväma in-ear hörlurar med mikrofon.', 'images/inear.jpg', 'SoundLite', 'SKU018', 'horlur-in-ear', '2024-12-28', 'Elektronik'),
+('Elgitarr', 'Elektrisk gitarr för både nybörjare och proffs.', 'images/guitar.jpg', 'RockTone', 'SKU019', 'elgitarr', '2024-12-15', 'Musikinstrument'),
+('Camping Tält', 'Rymligt tält för 4 personer med vattenavvisande tyg.', 'images/tent.jpg', 'OutdoorLife', 'SKU020', 'camping-talt', '2024-12-01', 'Friluftsliv');
+
+
+INSERT INTO products 
+(product_name, product_description, product_image, product_brand, product_SKU, product_slug, product_published, product_category)
+VALUES
+('Smart Högtalare', 'Röststyrd högtalare med AI-assistent och multiroom-funktion.', 'images/smart_speaker.jpg', 'VoiceMax', 'SKU021', 'smart-hogtalare', '2026-01-10', 'Elektronik'),
+('El-löpband', 'Modern träningsmaskin med display och app-integration.', 'images/treadmill.jpg', 'FitRun', 'SKU022', 'el-lopband', '2026-02-05', 'Sport & Hälsa'),
+('Elektrisk Skotork', 'Praktisk skotork med snabb torkning och timer.', 'images/shoe_dryer.jpg', 'DryFast', 'SKU023', 'elektrisk-skotork', '2026-03-12', 'Hushåll'),
+('VR-Headset', 'Högupplöst VR-headset med trådlös anslutning.', 'images/vr_headset.jpg', 'VirtualX', 'SKU024', 'vr-headset', '2026-04-20', 'Elektronik'),
+('Solpanel Kit', 'Komplett kit med solpaneler och batterilagring för hemmet.', 'images/solar_kit.jpg', 'EcoSun', 'SKU025', 'solpanel-kit', '2026-05-15', 'Hem & Trädgård');
+
+DROP TABLE products;
+
+INSERT INTO products 
+(product_name, product_description, product_image, product_brand, product_SKU, product_slug, product_published, product_category)
+VALUES
+('Trådlösa Hörlurar', 'Högkvalitativa Bluetooth-hörlurar med brusreducering.', 'images/headphones.jpg', 'SoundMax', 'SKU101', 'tradlosa-horlurar', '2025-08-26', 'Elektronik'),
+('Gaming Mus', 'Ergonomisk mus med RGB-belysning och hög precision.', 'images/mouse.jpg', 'ProGamer', 'SKU102', 'gaming-mus', '2025-07-25', 'Datorer & Tillbehör'),
+('4K TV 55 tum', 'Smart-TV med stöd för HDR och streamingappar.', 'images/tv.jpg', 'VisionX', 'SKU103', '4k-tv-55', '2025-07-20', 'Hemelektronik'),
+('Kaffebryggare', 'Snabb kaffebryggare med timer och värmehållning.', 'images/coffee.jpg', 'BrewMaster', 'SKU104', 'kaffebryggare', '2025-06-15', 'Hushåll'),
+('Smartphone X200', 'Modern smartphone med OLED-skärm och snabb processor.', 'images/smartphone.jpg', 'TechOne', 'SKU105', 'smartphone-x200', '2025-05-10', 'Mobiltelefoner'),
+('Robotdammsugare', 'Självgående dammsugare med kartläggningsfunktion.', 'images/vacuum.jpg', 'CleanBot', 'SKU106', 'robotdammsugare', '2026-05-05', 'Hushåll'),
+('Träningsklocka', 'Smartwatch för träning med pulsmätning och GPS.', 'images/watch.jpg', 'FitTrack', 'SKU107', 'traningsklocka', '2025-04-28', 'Sport & Hälsa'),
+('Bärbar Dator 15"', 'Laptop med Intel i7 och 16GB RAM.', 'images/laptop.jpg', 'NotePro', 'SKU108', 'barbar-dator-15', '2026-04-15', 'Datorer & Tillbehör'),
+('Bluetooth Högtalare', 'Kompakt högtalare med kraftfullt ljud.', 'images/speaker.jpg', 'SoundBox', 'SKU109', 'bluetooth-hogtalare', '2025-03-30', 'Elektronik'),
+('Köksmaskin', 'Multifunktionell köksmaskin för bakning och matlagning.', 'images/mixer.jpg', 'CookMaster', 'SKU110', 'koksmaskin', '2025-03-20', 'Hushåll'),
+('Elcykel', 'Miljövänlig elcykel med lång batteritid.', 'images/ebike.jpg', 'EcoRide', 'SKU111', 'elcykel', '2026-03-10', 'Fordon'),
+('Barnvagn', 'Praktisk och lätt barnvagn för vardagsbruk.', 'images/stroller.jpg', 'BabyMove', 'SKU112', 'barnvagn', '2026-02-28', 'Barn & Baby'),
+('Skrivbord', 'Stilrent skrivbord i ek med metallben.', 'images/desk.jpg', 'NordicHome', 'SKU113', 'skrivbord', '2025-02-15', 'Möbler'),
+('Kontorsstol', 'Ergonomisk stol med justerbar höjd och ryggstöd.', 'images/chair.jpg', 'ErgoSeat', 'SKU114', 'kontorsstol', '2026-02-01', 'Möbler'),
+('Mikrovågsugn', 'Effektiv mikrovågsugn med grillfunktion.', 'images/microwave.jpg', 'HeatPro', 'SKU115', 'mikrovagsugn', '2025-01-25', 'Hushåll'),
+('Systemkamera', 'Professionell kamera med 24MP sensor.', 'images/camera.jpg', 'PhotoMax', 'SKU116', 'systemkamera', '2025-01-15', 'Elektronik'),
+('Trådlöst Tangentbord', 'Slimmat tangentbord med lång batteritid.', 'images/keyboard.jpg', 'KeyPro', 'SKU117', 'tradlost-tangentbord', '2025-01-05', 'Datorer & Tillbehör'),
+('Hörlur In-Ear', 'Lätta och bekväma in-ear hörlurar med mikrofon.', 'images/inear.jpg', 'SoundLite', 'SKU118', 'horlur-in-ear', '2024-12-28', 'Elektronik'),
+('Elgitarr', 'Elektrisk gitarr för både nybörjare och proffs.', 'images/guitar.jpg', 'RockTone', 'SKU119', 'elgitarr', '2024-12-15', 'Musikinstrument'),
+('Camping Tält', 'Rymligt tält för 4 personer med vattenavvisande tyg.', 'images/tent.jpg', 'OutdoorLife', 'SKU120', 'camping-talt', '2024-12-01', 'Friluftsliv'),
+
+-- Kategorin Kläder
+('T-shirt Unisex', 'Bekväm bomullst-shirt för alla tillfällen.', 'images/tshirt.jpg', 'StyleWear', 'SKU121', 'tshirt-unisex', '2025-08-01', 'Kläder'),
+('Hoodie', 'Mjuk och varm hoodie med dragkedja.', 'images/hoodie.jpg', 'UrbanFit', 'SKU122', 'hoodie', '2025-8-10', 'Kläder'),
+('Jeans Slim Fit', 'Stilrena slim fit-jeans i mörkblå färg.', 'images/jeans.jpg', 'DenimCo', 'SKU123', 'jeans-slim-fit', '2025-06-05', 'Kläder'),
+('Vinterjacka', 'Vattentät vinterjacka med fleecefoder.', 'images/jacket.jpg', 'SnowWear', 'SKU124', 'vinterjacka', '2025-01-15', 'Kläder'),
+('Sommarklänning', 'Lätt och luftig klänning för sommaren.', 'images/dress.jpg', 'SunStyle', 'SKU125', 'sommarklanning', '2026-06-10', 'Kläder');
+
+
+INSERT INTO products 
+(product_name, product_description, product_image, product_brand, product_SKU, product_slug, product_published, product_category)
+VALUES
+('Trådlösa Hörlurar', 'Högkvalitativa Bluetooth-hörlurar med brusreducering.', 'https://placehold.co/300x400', 'SoundMax', 'SKU101', 'tradlosa-horlurar', '2025-08-26', 'Elektronik'),
+('Gaming Mus', 'Ergonomisk mus med RGB-belysning och hög precision.', 'https://placehold.co/300x400', 'ProGamer', 'SKU102', 'gaming-mus', '2025-07-25', 'Datorer & Tillbehör'),
+('4K TV 55 tum', 'Smart-TV med stöd för HDR och streamingappar.', 'https://placehold.co/300x400', 'VisionX', 'SKU103', '4k-tv-55', '2025-07-20', 'Hemelektronik'),
+('Kaffebryggare', 'Snabb kaffebryggare med timer och värmehållning.', 'https://placehold.co/300x400', 'BrewMaster', 'SKU104', 'kaffebryggare', '2025-06-15', 'Hushåll'),
+('Smartphone X200', 'Modern smartphone med OLED-skärm och snabb processor.', 'https://placehold.co/300x400', 'TechOne', 'SKU105', 'smartphone-x200', '2025-05-10', 'Mobiltelefoner'),
+('Robotdammsugare', 'Självgående dammsugare med kartläggningsfunktion.', 'https://placehold.co/300x400', 'CleanBot', 'SKU106', 'robotdammsugare', '2025-05-05', 'Hushåll'),
+('Träningsklocka', 'Smartwatch för träning med pulsmätning och GPS.', 'https://placehold.co/300x400', 'FitTrack', 'SKU107', 'traningsklocka', '2025-04-28', 'Sport & Hälsa'),
+('Bärbar Dator 15"', 'Laptop med Intel i7 och 16GB RAM.', 'https://placehold.co/300x400', 'NotePro', 'SKU108', 'barbar-dator-15', '2025-04-15', 'Datorer & Tillbehör'),
+('Bluetooth Högtalare', 'Kompakt högtalare med kraftfullt ljud.', 'https://placehold.co/300x400', 'SoundBox', 'SKU109', 'bluetooth-hogtalare', '2025-03-30', 'Elektronik'),
+('Köksmaskin', 'Multifunktionell köksmaskin för bakning och matlagning.', 'https://placehold.co/300x400', 'CookMaster', 'SKU110', 'koksmaskin', '2025-03-20', 'Hushåll'),
+('Elcykel', 'Miljövänlig elcykel med lång batteritid.', 'https://placehold.co/300x400', 'EcoRide', 'SKU111', 'elcykel', '2025-03-10', 'Fordon'),
+('Barnvagn', 'Praktisk och lätt barnvagn för vardagsbruk.', 'https://placehold.co/300x400', 'BabyMove', 'SKU112', 'barnvagn', '2025-02-28', 'Barn & Baby'),
+('Skrivbord', 'Stilrent skrivbord i ek med metallben.', 'https://placehold.co/300x400', 'NordicHome', 'SKU113', 'skrivbord', '2025-02-15', 'Möbler'),
+('Kontorsstol', 'Ergonomisk stol med justerbar höjd och ryggstöd.', 'https://placehold.co/300x400', 'ErgoSeat', 'SKU114', 'kontorsstol', '2025-02-01', 'Möbler'),
+('Mikrovågsugn', 'Effektiv mikrovågsugn med grillfunktion.', 'https://placehold.co/300x400', 'HeatPro', 'SKU115', 'mikrovagsugn', '2025-01-25', 'Hushåll'),
+('Systemkamera', 'Professionell kamera med 24MP sensor.', 'https://placehold.co/300x400', 'PhotoMax', 'SKU116', 'systemkamera', '2025-01-15', 'Elektronik'),
+('Trådlöst Tangentbord', 'Slimmat tangentbord med lång batteritid.', 'https://placehold.co/300x400', 'KeyPro', 'SKU117', 'tradlost-tangentbord', '2025-01-05', 'Datorer & Tillbehör'),
+('Hörlur In-Ear', 'Lätta och bekväma in-ear hörlurar med mikrofon.', 'https://placehold.co/300x400', 'SoundLite', 'SKU118', 'horlur-in-ear', '2024-12-28', 'Elektronik'),
+('Elgitarr', 'Elektrisk gitarr för både nybörjare och proffs.', 'https://placehold.co/300x400', 'RockTone', 'SKU119', 'elgitarr', '2024-12-15', 'Musikinstrument'),
+('Camping Tält', 'Rymligt tält för 4 personer med vattenavvisande tyg.', 'https://placehold.co/300x400', 'OutdoorLife', 'SKU120', 'camping-talt', '2024-12-01', 'Friluftsliv'),
+
+-- Kategorin Kläder
+('T-shirt Unisex', 'Bekväm bomullst-shirt för alla tillfällen.', 'https://placehold.co/300x400', 'StyleWear', 'SKU121', 'tshirt-unisex', '2025-09-01', 'Kläder'),
+('Hoodie', 'Mjuk och varm hoodie med dragkedja.', 'https://placehold.co/300x400', 'UrbanFit', 'SKU122', 'hoodie', '2025-10-10', 'Kläder'),
+('Jeans Slim Fit', 'Stilrena slim fit-jeans i mörkblå färg.', 'https://placehold.co/300x400', 'DenimCo', 'SKU123', 'jeans-slim-fit', '2025-11-05', 'Kläder'),
+('Vinterjacka', 'Vattentät vinterjacka med fleecefoder.', 'https://placehold.co/300x400', 'SnowWear', 'SKU124', 'vinterjacka', '2026-01-15', 'Kläder'),
+('Sommarklänning', 'Lätt och luftig klänning för sommaren.', 'https://placehold.co/300x400', 'SunStyle', 'SKU125', 'sommarklanning', '2026-06-10', 'Kläder');
+
+
+INSERT INTO products 
+(product_name, product_description, product_image, product_brand, product_SKU, product_slug, product_published, product_category, product_price)
+VALUES
+('Trådlösa Hörlurar', 'Högkvalitativa Bluetooth-hörlurar med brusreducering.', 'https://placehold.co/300x400', 'SoundMax', 'SKU101', 'tradlosa-horlurar', '2025-08-26', 'Elektronik', 1299.00),
+('Gaming Mus', 'Ergonomisk mus med RGB-belysning och hög precision.', 'https://placehold.co/300x400', 'ProGamer', 'SKU102', 'gaming-mus', '2025-07-25', 'Datorer & Tillbehör', 599.00),
+('4K TV 55 tum', 'Smart-TV med stöd för HDR och streamingappar.', 'https://placehold.co/300x400', 'VisionX', 'SKU103', '4k-tv-55', '2025-07-20', 'Hemelektronik', 6999.00),
+('Kaffebryggare', 'Snabb kaffebryggare med timer och värmehållning.', 'https://placehold.co/300x400', 'BrewMaster', 'SKU104', 'kaffebryggare', '2025-06-15', 'Hushåll', 899.00),
+('Smartphone X200', 'Modern smartphone med OLED-skärm och snabb processor.', 'https://placehold.co/300x400', 'TechOne', 'SKU105', 'smartphone-x200', '2025-05-10', 'Mobiltelefoner', 9990.00),
+('Robotdammsugare', 'Självgående dammsugare med kartläggningsfunktion.', 'https://placehold.co/300x400', 'CleanBot', 'SKU106', 'robotdammsugare', '2025-05-05', 'Hushåll', 3490.00),
+('Träningsklocka', 'Smartwatch för träning med pulsmätning och GPS.', 'https://placehold.co/300x400', 'FitTrack', 'SKU107', 'traningsklocka', '2025-04-28', 'Sport & Hälsa', 1990.00),
+('Bärbar Dator 15"', 'Laptop med Intel i7 och 16GB RAM.', 'https://placehold.co/300x400', 'NotePro', 'SKU108', 'barbar-dator-15', '2025-04-15', 'Datorer & Tillbehör', 12990.00),
+('Bluetooth Högtalare', 'Kompakt högtalare med kraftfullt ljud.', 'https://placehold.co/300x400', 'SoundBox', 'SKU109', 'bluetooth-hogtalare', '2025-03-30', 'Elektronik', 799.00),
+('Köksmaskin', 'Multifunktionell köksmaskin för bakning och matlagning.', 'https://placehold.co/300x400', 'CookMaster', 'SKU110', 'koksmaskin', '2025-03-20', 'Hushåll', 2590.00),
+('Elcykel', 'Miljövänlig elcykel med lång batteritid.', 'https://placehold.co/300x400', 'EcoRide', 'SKU111', 'elcykel', '2025-03-10', 'Fordon', 14990.00),
+('Barnvagn', 'Praktisk och lätt barnvagn för vardagsbruk.', 'https://placehold.co/300x400', 'BabyMove', 'SKU112', 'barnvagn', '2025-02-28', 'Barn & Baby', 3490.00),
+('Skrivbord', 'Stilrent skrivbord i ek med metallben.', 'https://placehold.co/300x400', 'NordicHome', 'SKU113', 'skrivbord', '2025-02-15', 'Möbler', 1990.00),
+('Kontorsstol', 'Ergonomisk stol med justerbar höjd och ryggstöd.', 'https://placehold.co/300x400', 'ErgoSeat', 'SKU114', 'kontorsstol', '2025-02-01', 'Möbler', 2490.00),
+('Mikrovågsugn', 'Effektiv mikrovågsugn med grillfunktion.', 'https://placehold.co/300x400', 'HeatPro', 'SKU115', 'mikrovagsugn', '2025-01-25', 'Hushåll', 1290.00),
+('Systemkamera', 'Professionell kamera med 24MP sensor.', 'https://placehold.co/300x400', 'PhotoMax', 'SKU116', 'systemkamera', '2025-01-15', 'Elektronik', 8490.00),
+('Trådlöst Tangentbord', 'Slimmat tangentbord med lång batteritid.', 'https://placehold.co/300x400', 'KeyPro', 'SKU117', 'tradlost-tangentbord', '2025-01-05', 'Datorer & Tillbehör', 499.00),
+('Hörlur In-Ear', 'Lätta och bekväma in-ear hörlurar med mikrofon.', 'https://placehold.co/300x400', 'SoundLite', 'SKU118', 'horlur-in-ear', '2024-12-28', 'Elektronik', 299.00),
+('Elgitarr', 'Elektrisk gitarr för både nybörjare och proffs.', 'https://placehold.co/300x400', 'RockTone', 'SKU119', 'elgitarr', '2024-12-15', 'Musikinstrument', 3990.00),
+('Camping Tält', 'Rymligt tält för 4 personer med vattenavvisande tyg.', 'https://placehold.co/300x400', 'OutdoorLife', 'SKU120', 'camping-talt', '2024-12-01', 'Friluftsliv', 2490.00),
+
+-- Kläder
+('T-shirt Unisex', 'Bekväm bomullst-shirt för alla tillfällen.', 'https://placehold.co/300x400', 'StyleWear', 'SKU121', 'tshirt-unisex', '2025-09-01', 'Kläder', 199.00),
+('Hoodie', 'Mjuk och varm hoodie med dragkedja.', 'https://placehold.co/300x400', 'UrbanFit', 'SKU122', 'hoodie', '2025-10-10', 'Kläder', 499.00),
+('Jeans Slim Fit', 'Stilrena slim fit-jeans i mörkblå färg.', 'https://placehold.co/300x400', 'DenimCo', 'SKU123', 'jeans-slim-fit', '2025-11-05', 'Kläder', 799.00),
+('Vinterjacka', 'Vattentät vinterjacka med fleecefoder.', 'https://placehold.co/300x400', 'SnowWear', 'SKU124', 'vinterjacka', '2026-01-15', 'Kläder', 1499.00),
+('Sommarklänning', 'Lätt och luftig klänning för sommaren.', 'https://placehold.co/300x400', 'SunStyle', 'SKU125', 'sommarklanning', '2026-06-10', 'Kläder', 599.00);
+
+
+INSERT INTO products 
+(product_name, product_description, product_image, product_brand, product_SKU, product_slug, product_published, product_category, product_price)
+VALUES
+('Trådlösa Hörlurar', 'Högkvalitativa Bluetooth-hörlurar med brusreducering.', 'https://placehold.co/300x400', 'SoundMax', 'SKU101', 'tradlosa-horlurar', '2025-08-26', 'electronics', 1299.00),
+('Gaming Mus', 'Ergonomisk mus med RGB-belysning och hög precision.', 'https://placehold.co/300x400', 'ProGamer', 'SKU102', 'gaming-mus', '2025-07-25', 'computers-accessories', 599.00),
+('4K TV 55 tum', 'Smart-TV med stöd för HDR och streamingappar.', 'https://placehold.co/300x400', 'VisionX', 'SKU103', '4k-tv-55', '2025-07-20', 'electronics', 6999.00),
+('Kaffebryggare', 'Snabb kaffebryggare med timer och värmehållning.', 'https://placehold.co/300x400', 'BrewMaster', 'SKU104', 'kaffebryggare', '2025-06-15', 'home', 899.00),
+('Smartphone X200', 'Modern smartphone med OLED-skärm och snabb processor.', 'https://placehold.co/300x400', 'TechOne', 'SKU105', 'smartphone-x200', '2025-05-10', 'mobile', 9990.00),
+('Robotdammsugare', 'Självgående dammsugare med kartläggningsfunktion.', 'https://placehold.co/300x400', 'CleanBot', 'SKU106', 'robotdammsugare', '2025-05-05', 'home', 3490.00),
+('Träningsklocka', 'Smartwatch för träning med pulsmätning och GPS.', 'https://placehold.co/300x400', 'FitTrack', 'SKU107', 'traningsklocka', '2025-04-28', 'sports-health', 1990.00),
+('Bärbar Dator 15"', 'Laptop med Intel i7 och 16GB RAM.', 'https://placehold.co/300x400', 'NotePro', 'SKU108', 'barbar-dator-15', '2025-04-15', 'computers-accessories', 12990.00),
+('Bluetooth Högtalare', 'Kompakt högtalare med kraftfullt ljud.', 'https://placehold.co/300x400', 'SoundBox', 'SKU109', 'bluetooth-hogtalare', '2025-03-30', 'electronics', 799.00),
+('Köksmaskin', 'Multifunktionell köksmaskin för bakning och matlagning.', 'https://placehold.co/300x400', 'CookMaster', 'SKU110', 'koksmaskin', '2025-03-20', 'home', 2590.00),
+('Elcykel', 'Miljövänlig elcykel med lång batteritid.', 'https://placehold.co/300x400', 'EcoRide', 'SKU111', 'elcykel', '2025-03-10', 'vehicles', 14990.00),
+('Barnvagn', 'Praktisk och lätt barnvagn för vardagsbruk.', 'https://placehold.co/300x400', 'BabyMove', 'SKU112', 'barnvagn', '2025-02-28', 'kids-baby', 3490.00),
+('Skrivbord', 'Stilrent skrivbord i ek med metallben.', 'https://placehold.co/300x400', 'NordicHome', 'SKU113', 'skrivbord', '2025-02-15', 'furniture', 1990.00),
+('Kontorsstol', 'Ergonomisk stol med justerbar höjd och ryggstöd.', 'https://placehold.co/300x400', 'ErgoSeat', 'SKU114', 'kontorsstol', '2025-02-01', 'furniture', 2490.00),
+('Mikrovågsugn', 'Effektiv mikrovågsugn med grillfunktion.', 'https://placehold.co/300x400', 'HeatPro', 'SKU115', 'mikrovagsugn', '2025-01-25', 'home', 1290.00),
+('Systemkamera', 'Professionell kamera med 24MP sensor.', 'https://placehold.co/300x400', 'PhotoMax', 'SKU116', 'systemkamera', '2025-01-15', 'electronics', 8490.00),
+('Trådlöst Tangentbord', 'Slimmat tangentbord med lång batteritid.', 'https://placehold.co/300x400', 'KeyPro', 'SKU117', 'tradlost-tangentbord', '2025-01-05', 'computers-accessories', 499.00),
+('Hörlur In-Ear', 'Lätta och bekväma in-ear hörlurar med mikrofon.', 'https://placehold.co/300x400', 'SoundLite', 'SKU118', 'horlur-in-ear', '2024-12-28', 'electronics', 299.00),
+('Elgitarr', 'Elektrisk gitarr för både nybörjare och proffs.', 'https://placehold.co/300x400', 'RockTone', 'SKU119', 'elgitarr', '2024-12-15', 'musical-instruments', 3990.00),
+('Camping Tält', 'Rymligt tält för 4 personer med vattenavvisande tyg.', 'https://placehold.co/300x400', 'OutdoorLife', 'SKU120', 'camping-talt', '2024-12-01', 'outdoors', 2490.00),
+
+-- Clothing category
+('T-shirt Unisex', 'Bekväm bomullst-shirt för alla tillfällen.', 'https://placehold.co/300x400', 'StyleWear', 'SKU121', 'tshirt-unisex', '2025-09-01', 'clothing', 199.00),
+('Hoodie', 'Mjuk och varm hoodie med dragkedja.', 'https://placehold.co/300x400', 'UrbanFit', 'SKU122', 'hoodie', '2025-10-10', 'clothing', 499.00),
+('Jeans Slim Fit', 'Stilrena slim fit-jeans i mörkblå färg.', 'https://placehold.co/300x400', 'DenimCo', 'SKU123', 'jeans-slim-fit', '2025-11-05', 'clothing', 799.00),
+('Vinterjacka', 'Vattentät vinterjacka med fleecefoder.', 'https://placehold.co/300x400', 'SnowWear', 'SKU124', 'vinterjacka', '2026-01-15', 'clothing', 1499.00),
+('Sommarklänning', 'Lätt och luftig klänning för sommaren.', 'https://placehold.co/300x400', 'SunStyle', 'SKU125', 'sommarklanning', '2026-06-10', 'clothing', 599.00);
+
+INSERT INTO products 
+(product_name, product_description, product_image, product_brand, product_SKU, product_slug, product_published, product_category, product_price)
+VALUES
+('Kortärmad Skjorta', 'Lätt bomullsskjorta med stilren design.', 'https://placehold.co/300x400', 'StyleWear', 'SKU126', 'kortarmad-skjorta', '2024-05-15', 'clothing', 349.00),
+('Träningsbyxor', 'Bekväma och stretchiga träningsbyxor för vardag och gym.', 'https://placehold.co/300x400', 'UrbanFit', 'SKU127', 'traningsbyxor', '2024-06-01', 'clothing', 499.00),
+('Cardigan', 'Mjuk cardigan i ullblandning, perfekt för kyliga dagar.', 'https://placehold.co/300x400', 'DenimCo', 'SKU128', 'cardigan', '2024-07-10', 'clothing', 699.00),
+('Linne', 'Enkelt linne i bomull, kan bäras under jacka eller ensam.', 'https://placehold.co/300x400', 'SunStyle', 'SKU129', 'linne', '2024-08-05', 'clothing', 199.00),
+('Vårjacka', 'Lätt vattentät vårjacka med justerbar huva.', 'https://placehold.co/300x400', 'SnowWear', 'SKU130', 'varjacka', '2024-04-20', 'clothing', 1299.00);
+
+
+-- Shoes
+INSERT INTO products 
+(product_name, product_description, product_image, product_brand, product_SKU, product_slug, product_published, product_category, product_price)
+VALUES
+('Running Sneakers', 'Lätta och bekväma sneakers för löpning.', 'https://placehold.co/300x400', 'RunFast', 'SKU131', 'running-sneakers', '2024-05-10', 'shoes', 1299.00),
+('Leather Boots', 'Stilrena skinnstövlar för vardag och arbete.', 'https://placehold.co/300x400', 'UrbanStep', 'SKU132', 'leather-boots', '2024-06-15', 'shoes', 1999.00),
+('Casual Sneakers', 'Sneakers i tyg med modern design.', 'https://placehold.co/300x400', 'StreetWalk', 'SKU133', 'casual-sneakers', '2024-07-01', 'shoes', 899.00),
+('Sandals', 'Bekväma sandaler för sommarbruk.', 'https://placehold.co/300x400', 'SunnyFeet', 'SKU134', 'sandals', '2024-06-20', 'shoes', 499.00),
+('High Heels', 'Eleganta högklackade skor för fest och tillställningar.', 'https://placehold.co/300x400', 'GlamStep', 'SKU135', 'high-heels', '2024-03-15', 'shoes', 1299.00),
+('Trail Runners', 'Robusta skor för terräng och outdoor-aktiviteter.', 'https://placehold.co/300x400', 'OutdoorPro', 'SKU136', 'trail-runners', '2024-04-05', 'shoes', 1499.00),
+('Slip-On Sneakers', 'Lätta och snabba att ta på, perfekt vardagssko.', 'https://placehold.co/300x400', 'QuickStep', 'SKU137', 'slip-on-sneakers', '2024-05-25', 'shoes', 799.00);
+
+-- Accessories
+INSERT INTO products 
+(product_name, product_description, product_image, product_brand, product_SKU, product_slug, product_published, product_category, product_price)
+VALUES
+('Leather Belt', 'Elegant skärp i äkta läder.', 'https://placehold.co/300x400', 'UrbanFit', 'SKU138', 'leather-belt', '2024-05-10', 'accessories', 349.00),
+('Sunglasses', 'UV-skyddade solglasögon med modern design.', 'https://placehold.co/300x400', 'SunStyle', 'SKU139', 'sunglasses', '2024-04-20', 'accessories', 499.00),
+('Beanie Hat', 'Varm och mjuk mössa för kalla dagar.', 'https://placehold.co/300x400', 'SnowWear', 'SKU140', 'beanie-hat', '2024-03-30', 'accessories', 199.00);
+
+INSERT INTO products 
+(product_name, product_description, product_image, product_brand, product_SKU, product_slug, product_published, product_category, product_price)
+VALUES
+('Denim Jacket', 'Klassisk jeansjacka för alla tillfällen.', 'https://placehold.co/300x400', 'BlueLine', 'SKU141', 'denim-jacket', '2024-08-22', 'clothing', 899.00),
+('Running Shoes', 'Lätta och bekväma löparskor.', 'https://placehold.co/300x400', 'FastStep', 'SKU142', 'running-shoes', '2025-08-28', 'shoes', 1299.00),
+('Graphic T-Shirt', 'Trendig t-shirt med tryck.', 'https://placehold.co/300x400', 'UrbanFit', 'SKU143', 'graphic-tshirt', '2025-08-28', 'clothing', 299.00),
+('Leather Wallet', 'Stilren plånbok i äkta läder.', 'https://placehold.co/300x400', 'UrbanFit', 'SKU144', 'leather-wallet', '2025-08-28', 'accessories', 399.00),
+('Sports Cap', 'Andningsbar keps för sport och fritid.', 'https://placehold.co/300x400', 'SunStyle', 'SKU145', 'sports-cap', '2025-08-28', 'accessories', 249.00),
+('Sneaker Socks', 'Bekväma och slitstarka strumpor.', 'https://placehold.co/300x400', 'FastStep', 'SKU146', 'sneaker-socks', '2025-08-28', 'clothing', 149.00);
+
+
+
+ --kategori-tabell
+ CREATE TABLE IF NOT EXISTS categories (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE,
+    slug TEXT NOT NULL UNIQUE,
+    image TEXT,
+    created_at TEXT DEFAULT (datetime('now'))
+ );
+
+ -- junction-tabell kategori - produkt. många till många 
+ CREATE TABLE IF NOT EXISTS product_categories (
+  product_SKU TEXT NOT NULL,
+  category_id INTEGER NOT NULL,
+  PRIMARY KEY (product_SKU, category_id),
+  FOREIGN KEY (product_SKU) REFERENCES products(product_SKU) ON DELETE CASCADE,
+  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+);
+
+ALTER TABLE products
+DROP COLUMN product_category;
+
+INSERT INTO categories (name, slug, image) VALUES ('Retro', 'retro', 'https://placehold.co/300x400');
+
+UPDATE products
+SET product_image = '081af0cac09b553cfb54eb454586dfdb.png';
+
+INSERT INTO categories (name, slug, image)
+VALUES
+  ('Elektronik', 'elektronik', '081af0cac09b553cfb54eb454586dfdb.png'),
+  ('Hem & Kök', 'hem-kok', '081af0cac09b553cfb54eb454586dfdb.png'),
+  ('Fordon & Fritid', 'fordon-fritid', '081af0cac09b553cfb54eb454586dfdb.png'),
+  ('Kläder', 'klader', '081af0cac09b553cfb54eb454586dfdb.png'),
+  ('Accessoarer', 'accessoarer', '081af0cac09b553cfb54eb454586dfdb.png');
+
+INSERT INTO product_categories (product_SKU, category_id) VALUES
+  ('SKU101', 9), -- Hörlurar
+  ('SKU102', 9), -- Gaming Mus
+  ('SKU103', 9), -- TV
+  ('SKU105', 9), -- Smartphone
+  ('SKU106', 9), -- Robotdammsugare
+  ('SKU108', 9), -- Laptop
+  ('SKU109', 9), -- Högtalare
+  ('SKU116', 9), -- Systemkamera
+  ('SKU117', 9); -- Tangentbord
+
+  INSERT INTO product_categories (product_SKU, category_id) VALUES
+  ('SKU104', 10), -- Kaffebryggare
+  ('SKU110', 10), -- Köksmaskin
+  ('SKU115', 10), -- Mikrovågsugn
+  ('SKU113', 10), -- Skrivbord
+  ('SKU114', 10); -- Kontorsstol
+
+
+-- Fordon & Fritid (id = 3)
+INSERT INTO product_categories (product_SKU, category_id) VALUES
+  ('SKU111', 11), -- Elcykel
+  ('SKU112', 11), -- Barnvagn
+  ('SKU120', 11); -- Tält
+
+-- Kläder (id = 4)
+INSERT INTO product_categories (product_SKU, category_id) VALUES
+  ('SKU121', 12), -- T-shirt
+  ('SKU122', 12), -- Hoodie
+  ('SKU123', 12), -- Jeans
+  ('SKU124', 12), -- Vinterjacka
+  ('SKU125', 12), -- Klänning
+  ('SKU126', 12), -- Skjorta
+  ('SKU128', 12), -- Cardigan
+  ('SKU130', 12), -- Vårjacka
+  ('SKU141', 12), -- Denim Jacket
+  ('SKU143', 12); -- Graphic T-shirt
+
+-- Skor (id = 5)
+INSERT INTO product_categories (product_SKU, category_id) VALUES
+  ('SKU132', 3), -- Boots
+  ('SKU133', 3), -- Sneakers
+  ('SKU134', 3), -- Sandaler
+  ('SKU135', 3), -- High Heels
+  ('SKU136', 3), -- Trail Runners
+  ('SKU137', 3), -- Slip-On
+  ('HDJ378', 3), -- Clownskor
+  ('QWP390', 3); -- Fina skor
+
+-- Accessoarer (id = 6)
+INSERT INTO product_categories (product_SKU, category_id) VALUES
+  ('SKU138', 13), -- Bälte
+  ('SKU144', 13), -- Plånbok
+  ('SKU139', 13), -- Solglasögon
+  ('SKU145', 13), -- Keps
+  ('SKU140', 13), -- Mössa
+  ('SKU146', 13); -- Strumpor
+
+INSERT INTO product_categories ( product_SKU, category_id) VALUES
+('QWP390', 3);
+
+
+  DROP TABLE product_categories;
+
+CREATE TABLE product_categories (
+  product_SKU TEXT NOT NULL,
+  category_id INTEGER NOT NULL,
+  PRIMARY KEY (product_SKU, category_id),
+  FOREIGN KEY (product_SKU) REFERENCES products(product_SKU) ON DELETE CASCADE,
+  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  email TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL, -- hashad, inte i klartext
+  role TEXT DEFAULT 'user' -- 'user' eller 'admin'
+);
+
+INSERT INTO users ( email, password, role ) VALUES ( 'hej@email.com', 'korv', 'admin' );
+
+
+CREATE TABLE IF NOT EXISTS favorites (
+  user_id INTEGER NOT NULL,
+  product_SKU TEXT NOT NULL,
+  PRIMARY KEY (user_id, product_SKU),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_SKU) REFERENCES products(product_SKU) ON DELETE CASCADE
+);
+
+CREATE TABLE carts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+DROP TABLE carts;
+
+CREATE TABLE cart_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  cart_id INTEGER NOT NULL,
+  product_SKU TEXT NOT NULL,
+  quantity INTEGER NOT NULL DEFAULT 1,
+  FOREIGN KEY (cart_id) REFERENCES carts(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_SKU) REFERENCES products(product_SKU) ON DELETE CASCADE
+);
+
+DROP TABLE cart_items;
+
+-- TODO användarinfon borde sparas separat vid beställning, behövs i fall där användarens profil tas bort innan varan skickats
+
+CREATE TABLE orders (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  first_name TEXT,
+  last_name TEXT,
+  email TEXT,
+  street TEXT,
+  postal_code TEXT,
+  city TEXT,
+  newsletter BOOLEAN,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+DROP TABLE orders;
+DROP TABLE order_items;
+
+CREATE TABLE order_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  order_id INTEGER,
+  product_SKU TEXT,
+  quantity INTEGER,
+  price REAL,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_SKU) REFERENCES products(product_SKU) ON DELETE CASCADE
+);
+
+UPDATE products
+SET product_brand = "SnoWear"
+WHERE id = 24;
