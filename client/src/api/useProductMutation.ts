@@ -38,7 +38,7 @@ export function useProductMutation() {
 
     // bilduppladdning
     const imageInput = target.elements.namedItem("image") as HTMLInputElement;
-    if (imageInput?.files![0]) {
+    if (imageInput?.files?.[0]) {
       formData.append("image", imageInput.files[0]);
     }
 
