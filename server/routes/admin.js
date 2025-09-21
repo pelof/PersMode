@@ -14,7 +14,7 @@ function generateSlug(product_name) {
     .replace(/ö/g, "o")
     .replace(/[^a-z0-9]+/g, "-") // Byt ut specialtecken mot "-"
     .replace(/^-|-$/g, ""); // Ta bort "-" i början eller slutet
-};
+}
 
 router.get("/products", (req, res) => {
   const products = db.prepare("SELECT * FROM products").all();
@@ -51,7 +51,11 @@ router.post("/products", upload.single("image"), (req, res) => {
     const hash = crypto.createHash("md5").update(req.file.buffer).digest("hex");
     const ext = path.extname(req.file.originalname);
     const filename = `${hash}${ext}`;
-    const filePath = path.join(__dirname, "../public/images/products", filename);
+    const filePath = path.join(
+      __dirname,
+      "../public/images/products",
+      filename
+    );
 
     // Spara bara om filen inte redan finns
     if (!fs.existsSync(filePath)) {
@@ -94,7 +98,6 @@ router.post("/products", upload.single("image"), (req, res) => {
     res.status(500).json({ error: "Något gick fel vid sparandet" });
   }
 });
-
 
 router.delete("/products/:sku", (req, res) => {
   const { sku } = req.params;
@@ -162,7 +165,11 @@ router.post("/categories", upload.single("image"), (req, res) => {
     const hash = crypto.createHash("md5").update(req.file.buffer).digest("hex");
     const ext = path.extname(req.file.originalname);
     const filename = `${hash}${ext}`;
-    const filePath = path.join(__dirname, "../public/images/products", filename);
+    const filePath = path.join(
+      __dirname,
+      "../public/images/categories",
+      filename
+    );
 
     // Spara bara om filen inte redan finns
     if (!fs.existsSync(filePath)) {
@@ -192,14 +199,47 @@ router.post("/categories", upload.single("image"), (req, res) => {
 router.delete("/categories/:slug", (req, res) => {
   const { slug } = req.params;
 
-  const info = db.prepare("DELETE FROM categories WHERE slug = ?").run(slug);
+  try {
+    const category = db
+      .prepare("SELECT image FROM categories WHERE slug = ?")
+      .get(slug);
 
-  if (info.changes === 0) {
-    return res.status(404).json({ error: "Kategorin hittades inte" });
+    if (!category) {
+      return res.status(404).json({ error: "Kategorin hittades inte" });
+    }
+
+    // Ta bort kategorin från databasen
+    const stmt = db.prepare("DELETE FROM categories WHERE slug = ?");
+    const info = stmt.run(slug);
+
+    if (info.changes === 0) {
+      return res.status(404).json({ error: "Kategorin hittades inte" });
+    }
+
+    // Kolla om någon annan använder samma bild innan vi raderar den
+    if (category.image) {
+      const otherUsers = db
+        .prepare("SELECT COUNT(*) as count FROM categories WHERE image = ?")
+        .get(category.image);
+
+      if (otherUsers.count === 0) {
+        const filePath = path.join(
+          __dirname,
+          "../public/images/categories",
+          category.image
+        );
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Ett fel uppstod" });
   }
 
-  res.json({ success: true });
 });
-
 
 module.exports = router;
