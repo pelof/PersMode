@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router"
 // hämtar info om inloggad
 export function useAuth() {
   const queryClient = useQueryClient();

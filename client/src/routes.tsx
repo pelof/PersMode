@@ -71,6 +71,9 @@ const rootRouteAdmin = createRoute({
     }
 
     const user = await res.json();
+    if (!user) {
+      throw redirect({ to: "/login" });
+    }
     if (user.role !== "admin") {
       throw redirect({ to: "/" }); // inloggad men ej admin
     }
