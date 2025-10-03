@@ -31,7 +31,8 @@ app.use(
     cookie: {
       secure: false,
       maxAge: 1000 * 60 * 60 * 24, // 1 dag
-      sameSite: "lax",
+      // sameSite: "lax",
+      sameSite: false,
       httpOnly: true,
     },
   })
@@ -44,7 +45,7 @@ app.use(
   express.static(path.join(__dirname, "public/images/products"))
 );
 
-// Filuppladdning
+// Filuppladdning är nog duplicerat i helper upload
 const storage = multer.memoryStorage(); //Filer sparas i RAM
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); //Max 5 mb
 app.locals.upload = upload; // gör multer åtkomlig för routes genom req.app.locals.upload

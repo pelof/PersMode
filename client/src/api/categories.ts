@@ -5,6 +5,7 @@ const API_URL = "http://localhost:5000/api/admin/categories";
 async function deleteCategory(slug: string) {
     const res = await fetch(`${API_URL}/${slug}`, {
         method: "DELETE",
+        credentials: "include",
     });
     if (!res.ok) throw new Error("Failed to delete category");
     return slug;

@@ -5,6 +5,7 @@ const upload = require("../helpers/upload");
 const crypto = require("crypto");
 const path = require("path");
 const fs = require("fs");
+const { requireAdmin } = require("../middleware/auth");
 
 function generateSlug(product_name) {
   return product_name
@@ -16,12 +17,12 @@ function generateSlug(product_name) {
     .replace(/^-|-$/g, ""); // Ta bort "-" i början eller slutet
 }
 
-router.get("/products", (req, res) => {
+router.get("/products", requireAdmin, (req, res) => {
   const products = db.prepare("SELECT * FROM products").all();
   res.json(products);
 });
 
-router.post("/products", upload.single("image"), (req, res) => {
+router.post("/products", requireAdmin, upload.single("image"), (req, res) => {
   const {
     product_name,
     product_description,
@@ -99,7 +100,7 @@ router.post("/products", upload.single("image"), (req, res) => {
   }
 });
 
-router.delete("/products/:sku", (req, res) => {
+router.delete("/products/:sku", requireAdmin ,(req, res) => {
   const { sku } = req.params;
 
   try {
@@ -151,7 +152,7 @@ router.get("/categories", (req, res) => {
   res.json(categories);
 });
 //TODO Bugg: när man misslyckades med att skapa ny kategori blev man utloggad
-router.post("/categories", upload.single("image"), (req, res) => {
+router.post("/categories", requireAdmin, upload.single("image"), (req, res) => {
   const { name } = req.body;
 
   if (!name) {
@@ -196,7 +197,7 @@ router.post("/categories", upload.single("image"), (req, res) => {
   }
 });
 
-router.delete("/categories/:slug", (req, res) => {
+router.delete("/categories/:slug", requireAdmin, (req, res) => {
   const { slug } = req.params;
 
   try {
