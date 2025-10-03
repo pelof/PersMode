@@ -4,7 +4,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 const API_URL = "http://localhost:5000/api/admin";
 
 async function fetchAdminProducts(): Promise<Product[]> {
-  const res = await fetch(`${API_URL}/products`);
+  const res = await fetch(`${API_URL}/products`, {
+    credentials: "include", // viktigt för att skicka med session-cookien
+  });
   if (!res.ok) throw new Error("Failed to fetch admin products");
   return res.json();
 }
@@ -12,6 +14,7 @@ async function fetchAdminProducts(): Promise<Product[]> {
 async function deleteAdminProduct(sku: string) {
   const res = await fetch(`${API_URL}/products/${sku}`, {
     method: "DELETE",
+    credentials: "include", // samma här
   });
   if (!res.ok) throw new Error("Failed to delete product");
   return sku;

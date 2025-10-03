@@ -46,6 +46,7 @@ export function useProductMutation() {
       const res = await fetch("http://localhost:5000/api/admin/products", {
         method: "POST",
         body: formData, // OBS! inte JSON.stringify
+        credentials: "include",
       });
       const data = await res.json();
       alert("Produkt skapad!");

@@ -18,6 +18,7 @@ export function useCategoryMutation() {
       const res = await fetch("http://localhost:5000/api/admin/categories", {
         method: "POST",
         body: formData, // OBS! inte JSON.stringify
+        credentials: "include",
       });
       const data = await res.json();
       alert("Kategori skapad!");
